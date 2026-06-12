@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>CYLLUX HOMES — Product Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="themes.js"></script>
+  <script src="mobile-nav.js"></script>
+</head>
+<body>
+  <nav id="main-nav">
+    <div class="nav-logo" onclick="window.location.href='index.html'">
+      <div class="logo-mark">CX</div>
+      CYLLUX
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Catalog</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span class="theme-label" id="theme-label">Dark</span>
+      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()"></div>
+      <button class="nav-icon-btn" onclick="window.location.href='login.html'">👤</button>
+      <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
+        🛒
+        <span class="cart-badge" id="cart-badge">0</span>
+      </button>
+    </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
+        <span></span><span></span><span></span>
+      </button>
+  </nav>
+
+  <main>
+    <div class="detail-layout" style="display: grid; grid-template-columns: 1fr 1fr; min-height: calc(100vh - 68px);">
+      <div class="detail-gallery" style="padding: 60px 5vw;">
+        <div class="detail-main-img" style="height: 400px; background-size: cover; background-position: center; background-color: var(--bg-3);" id="detail-main-img"></div>
+      </div>
+      <div class="detail-info" style="padding: 60px 5vw;">
+        <div class="product-card-cat" id="detail-cat-label"></div>
+        <h1 class="detail-title" id="detail-title" style="font-size: 32px; margin: 16px 0;"></h1>
+        <div class="detail-price-block"><div class="detail-price" id="detail-price" style="font-size: 36px; font-weight: 800;"></div></div>
+        <p class="detail-desc" id="detail-desc" style="margin: 20px 0; line-height: 1.6;"></p>
+        <div class="detail-quantity" style="display: flex; gap: 16px; align-items: center; margin: 24px 0;">
+          <span class="qty-label">Qty</span>
+          <div class="qty-control" style="display: flex; border: 1px solid var(--border);">
+            <button class="qty-btn" onclick="changeQty(-1)" style="width: 36px; height: 36px; background: var(--bg-3); border: none; cursor: pointer;">−</button>
+            <div class="qty-num" id="qty-display" style="width: 44px; text-align: center; line-height: 36px;">1</div>
+            <button class="qty-btn" onclick="changeQty(1)" style="width: 36px; height: 36px; background: var(--bg-3); border: none; cursor: pointer;">+</button>
+          </div>
+        </div>
+        <div class="detail-actions" style="display: flex; gap: 12px;">
+          <button class="btn-primary" onclick="addCurrentToCart()">Add to Cart</button>
+          <button class="btn-outline" onclick="window.location.href='cart.html'">View Cart</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"><div id="toast-msg"></div></div>
+  <div id="pf-launcher" onclick="pfToggle()"><svg viewBox="0 0 24 24" width="26" height="26" fill="white"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg></div>
+  <div id="pf-window"><div class="pf-header"><span>🏠 Cyllux Assistant</span></div><div class="pf-messages" id="pf-messages"></div><div class="pf-input-row"><textarea id="pf-input" placeholder="Ask about design..." rows="1"></textarea><button id="pf-send" onclick="pfSend()">➤</button></div></div>
+
+  <script src="data.js"></script>
+  <script src="cart.js"></script>
+  <script src="chatbot.js"></script>
+  <script src="theme.js"></script>
+  <script src="product-detail.js"></script>
+</body>
+</html>

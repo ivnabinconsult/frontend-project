@@ -2,9 +2,9 @@ let pfOpen = false;
 
 function pfToggle() {
   pfOpen = !pfOpen;
-  const window = document.getElementById('pf-window');
-  if (window) {
-    window.classList.toggle('open', pfOpen);
+  const pfWin = document.getElementById('pf-window');
+  if (pfWin) {
+    pfWin.classList.toggle('open', pfOpen);
   }
   if (pfOpen && document.getElementById('pf-messages').children.length === 0) {
     pfAddMessage('bot', "Hi! I'm Cyllux AI. Need help with interior design, smart tech, or pricing? Ask away! ✨");

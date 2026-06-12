@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>CYLLUX HOMES — Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="themes.js"></script>
+  <script src="mobile-nav.js"></script>
+</head>
+<body id="login-page">
+  <div class="login-left">
+    <div class="login-brand" onclick="window.location.href='index.html'"><div class="logo-mark">CX</div>Cyllux Homes</div>
+    <p class="login-tagline">Premium interior design and smart home technology. Access your account to manage orders.</p>
+  </div>
+  <div class="login-right">
+    <div class="login-card">
+      <h2 class="section-title" style="font-size: 28px; margin-bottom: 32px;">Welcome <span class="crimson-slash">back.</span></h2>
+      <input class="login-input" id="login-email" placeholder="Email Address">
+      <input class="login-input" id="login-password" type="password" placeholder="Password">
+      <button class="btn-primary login-submit" onclick="handleLogin()">Sign In →</button>
+      <div class="login-create" style="text-align: center; margin-top: 24px;">Don't have an account? <a href="#" style="color: var(--crimson);">Create Account</a></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"><div id="toast-msg"></div></div>
+
+  <script src="cart.js"></script>
+  <script src="theme.js"></script>
+  <script>
+    function handleLogin() {
+      showToast('Welcome back!');
+      setTimeout(() => window.location.href = 'index.html', 1000);
+    }
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

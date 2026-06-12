@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>CYLLUX HOMES — Catalog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="themes.js"></script>
+  <script src="mobile-nav.js"></script>
+</head>
+<body>
+  <nav id="main-nav">
+    <div class="nav-logo" onclick="window.location.href='index.html'">
+      <div class="logo-mark">CX</div>
+      CYLLUX
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html" class="active">Catalog</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span class="theme-label" id="theme-label">Dark</span>
+      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()"></div>
+      <button class="nav-icon-btn" onclick="window.location.href='login.html'">👤</button>
+      <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
+        🛒
+        <span class="cart-badge" id="cart-badge">0</span>
+      </button>
+    </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
+        <span></span><span></span><span></span>
+      </button>
+  </nav>
+
+  <main>
+    <div class="catalog-header">
+      <div class="section-label">Full Collection</div>
+      <h1 class="section-title">Shop <span class="crimson-slash">Everything</span></h1>
+      <div class="filter-tabs" id="filter-tabs">
+        <button class="filter-tab active" data-filter="all">All</button>
+        <button class="filter-tab" data-filter="interior">Interior Design</button>
+        <button class="filter-tab" data-filter="tech">Tech & Gadgets</button>
+        <button class="filter-tab" data-filter="lighting">Lighting</button>
+      </div>
+      <select class="sort-select" id="sort-select">
+        <option value="default">Sort: Featured</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+      </select>
+    </div>
+    <div class="catalog-layout">
+      <aside class="catalog-sidebar">
+        <div class="sidebar-section">
+          <div class="section-label" style="margin-bottom:16px">Price Range</div>
+          <div class="price-range">
+            <input type="range" min="0" max="2000000" value="2000000" id="priceRange">
+          </div>
+          <div class="price-labels"><span>₦0</span><span id="priceVal">up to ₦2,000,000</span></div>
+        </div>
+      </aside>
+      <div class="catalog-grid-area">
+        <div class="catalog-products-grid" id="catalog-grid"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 <span style="color:var(--crimson)">Cyllux Homes</span>. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"><div id="toast-msg"></div></div>
+  <div id="pf-launcher" onclick="pfToggle()"><svg viewBox="0 0 24 24" width="26" height="26" fill="white"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg></div>
+  <div id="pf-window"><div class="pf-header"><span>🏠 Cyllux Assistant</span></div><div class="pf-messages" id="pf-messages"></div><div class="pf-input-row"><textarea id="pf-input" placeholder="Ask about design..." rows="1"></textarea><button id="pf-send" onclick="pfSend()">➤</button></div></div>
+
+  <script src="data.js"></script>
+  <script src="cart.js"></script>
+  <script src="chatbot.js"></script>
+  <script src="theme.js"></script>
+  <script src="product.js"></script>
+</body>
+</html>

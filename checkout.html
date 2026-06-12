@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>CYLLUX HOMES — Checkout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="themes.js"></script>
+  <script src="mobile-nav.js"></script>
+</head>
+<body>
+  <nav id="main-nav">
+    <div class="nav-logo" onclick="window.location.href='index.html'">
+      <div class="logo-mark">CX</div>
+      CYLLUX
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Catalog</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span class="theme-label" id="theme-label">Dark</span>
+      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()"></div>
+      <button class="nav-icon-btn" onclick="window.location.href='login.html'">👤</button>
+      <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
+        🛒
+        <span class="cart-badge" id="cart-badge">0</span>
+      </button>
+    </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
+        <span></span><span></span><span></span>
+      </button>
+  </nav>
+
+  <main>
+    <div class="checkout-layout">
+      <div class="checkout-form-area">
+        <div class="checkout-steps">
+          <div class="checkout-step active"><div class="step-num" style="width: 28px; height: 28px; background: var(--crimson); color: white; display: flex; align-items: center; justify-content: center;">1</div><div class="step-label">Shipping</div></div>
+          <div class="step-connector" style="width: 40px; height: 1px; background: var(--border);"></div>
+          <div class="checkout-step"><div class="step-num" style="width: 28px; height: 28px; background: var(--bg-4); display: flex; align-items: center; justify-content: center;">2</div><div class="step-label">Payment</div></div>
+        </div>
+        <div id="checkout-step-1">
+          <div class="form-section">
+            <div class="form-section-title">Shipping Information</div>
+            <div class="form-row"><input class="form-input" id="firstname" placeholder="First Name"><input class="form-input" id="lastname" placeholder="Last Name"></div>
+            <div class="form-row single"><input class="form-input" id="email" placeholder="Email Address"></div>
+            <div class="form-row single"><input class="form-input" id="address" placeholder="Street Address"></div>
+          </div>
+          <button class="btn-primary" onclick="goToStep(2)">Continue to Payment →</button>
+        </div>
+        <div id="checkout-step-2" style="display:none">
+          <div class="form-section">
+            <div class="form-section-title">Payment Method</div>
+            <div class="payment-methods">
+              <div class="payment-method active" onclick="selectPayment(this)">💳 Card</div>
+              <div class="payment-method" onclick="selectPayment(this)">🏦 Bank Transfer</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:12px">
+            <button class="btn-outline" onclick="goToStep(1)">← Back</button>
+            <button class="btn-primary" onclick="placeOrder()">Place Order</button>
+          </div>
+        </div>
+      </div>
+      <div class="checkout-order-summary">
+        <div class="summary-title">Order Summary</div>
+        <div id="checkout-review-items"></div>
+        <div class="summary-total"><span>Total</span><span id="co-total">₦0</span></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"><div id="toast-msg"></div></div>
+  <div id="pf-launcher" onclick="pfToggle()"><svg viewBox="0 0 24 24" width="26" height="26" fill="white"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg></div>
+  <div id="pf-window"><div class="pf-header"><span>🏠 Cyllux Assistant</span></div><div class="pf-messages" id="pf-messages"></div><div class="pf-input-row"><textarea id="pf-input" placeholder="Ask about design..." rows="1"></textarea><button id="pf-send" onclick="pfSend()">➤</button></div></div>
+
+  <script src="data.js"></script>
+  <script src="cart.js"></script>
+  <script src="chatbot.js"></script>
+  <script src="theme.js"></script>
+  <script src="checkout.js"></script>
+</body>
+</html>
