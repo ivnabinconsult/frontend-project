@@ -834,3 +834,214 @@ footer {
   color: white;
   font-size: 18px;
 }
+
+/* ═══════════════════════════════════════════════════
+   MOBILE OPTIMIZATION — SPACING & LAYOUT FIXES (DEBUGGED)
+   ═══════════════════════════════════════════════════ */
+
+/* All mobile devices (up to 768px) - base fixes */
+@media (max-width: 768px) {
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+    width: 100%;
+  }
+  
+  /* Ensure all images and media are responsive */
+  img, iframe, video, canvas {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Fix potential overflow on common containers */
+  .hero-content,
+  .catalog-sidebar,
+  .catalog-grid-area,
+  .cart-items-area,
+  .cart-summary-area,
+  .checkout-form-area,
+  .checkout-order-summary,
+  .philosophy-strip,
+  .contact-section {
+    width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+/* Small phones (up to 480px) */
+@media (max-width: 480px) {
+  /* Fix product grid spacing — YOUR MAIN ISSUE */
+  .products-grid,
+  .catalog-products-grid {
+    gap: 16px;  /* Was 2px — now proper spacing */
+  }
+  
+  /* Add vertical spacing between major sections */
+  .hero,
+  .philosophy-strip,
+  .products-grid,
+  .catalog-products-grid,
+  .contact-section,
+  footer {
+    margin-bottom: 0;
+  }
+  
+  /* Add spacing after key sections */
+  .philosophy-strip {
+    margin-bottom: 0;
+  }
+  
+  /* Better spacing for philosophy pillars */
+  .pillar {
+    margin-bottom: 32px;
+  }
+  
+  .pillar:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Philosophy strip gap */
+  .philosophy-strip {
+    gap: 32px;
+  }
+  
+  /* Cart item — more breathing room */
+  .cart-item {
+    gap: 12px;
+    grid-template-columns: 70px 1fr auto;
+  }
+  
+  /* Product card body padding */
+  .product-card-body {
+    padding: 16px;
+  }
+  
+  /* Hero section spacing */
+  .hero {
+    padding-bottom: 40px;
+  }
+  
+  .hero-body {
+    margin-bottom: 24px;
+  }
+  
+  .hero-actions {
+    gap: 12px;
+  }
+  
+  /* Section titles */
+  .section-title {
+    margin-bottom: 20px;
+  }
+  
+  /* Filter tabs */
+  .filter-tabs {
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .filter-tab {
+    padding: 6px 12px;
+    font-size: 10px;
+  }
+  
+  /* Form rows stack on mobile */
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  /* Footer spacing */
+  footer {
+    padding: 40px 5vw 24px;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  /* Login page spacing */
+  .login-left {
+    padding: 80px 5vw 20px;
+  }
+  
+  .login-card {
+    margin: 0;
+  }
+  
+  /* Catalog header */
+  .catalog-header {
+    padding: 80px 5vw 30px;
+  }
+  
+  /* About hero */
+  .about-hero {
+    padding: 100px 5vw 40px;
+  }
+  
+  /* Contact section */
+  .contact-section {
+    padding: 40px 5vw;
+    gap: 32px;
+  }
+}
+
+/* Medium phones & large phones (481px to 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  /* Product grid spacing */
+  .products-grid,
+  .catalog-products-grid {
+    gap: 20px;
+  }
+  
+  /* Philosophy strip */
+  .philosophy-strip {
+    gap: 40px;
+  }
+  
+  /* Cart item */
+  .cart-item {
+    grid-template-columns: 80px 1fr auto;
+    gap: 16px;
+  }
+  
+  /* Section spacing */
+  .philosophy-strip,
+  .products-grid,
+  .contact-section {
+    margin-bottom: 20px;
+  }
+}
+
+/* Extra small devices (under 360px) — safety net */
+@media (max-width: 360px) {
+  .cart-item {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    text-align: center;
+  }
+  
+  .cart-item-img {
+    margin: 0 auto;
+  }
+  
+  .product-card-body {
+    padding: 12px;
+  }
+  
+  .hero-title {
+    font-size: 40px;
+  }
+  
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .hero-actions .btn-primary,
+  .hero-actions .btn-outline {
+    justify-content: center;
+  }
+}
