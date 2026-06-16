@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script src="main.js"></script>
   <script src="themes.js"></script>
+  <script src="mobile-nav.js"></script>
 </head>
 <body>
   <nav id="main-nav">
@@ -31,6 +31,9 @@
         <span class="cart-badge" id="cart-badge">0</span>
       </button>
     </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
+        <span></span><span></span><span></span>
+      </button>
   </nav>
 
   <main>
