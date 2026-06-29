@@ -193,3 +193,29 @@ const products = [
 function formatNGN(n) { 
   return '₦' + n.toLocaleString('en-NG'); 
 }
+// ── Seller Catalog Merge ──────────────────────────────────────────
+// Reads seller-published products from localStorage and merges them
+// into the global `products` array so all catalog/storefront pages
+// automatically pick up new/edited/deleted seller listings.
+(function mergeSeller() {
+  try {
+    const overrides = JSON.parse(localStorage.getItem('cyllux_catalog_overrides') || '[]');
+    overrides.forEach(sp => {
+      const idx = products.findIndex(p => p.id === sp.id);
+      if (idx !== -1) {
+        products[idx] = sp;          // update existing (edited product)
+      } else {
+        products.push(sp);           // brand-new seller product
+      }
+    });
+    // Remove any products that were deleted by the seller
+    const sellerStoredIds = JSON.parse(localStorage.getItem('cyllux_seller_products') || '[]')
+      .map(p => p.id);
+    // Keep default products + only seller products that still exist in seller store
+    for (let i = products.length - 1; i >= 0; i--) {
+      if (products[i]._seller && !sellerStoredIds.includes(products[i].id)) {
+        products.splice(i, 1);
+      }
+    }
+  } catch(e) { /* silently skip if localStorage unavailable */ }
+}());

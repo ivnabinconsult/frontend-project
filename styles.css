@@ -82,6 +82,7 @@ nav {
   justify-content: space-between;
   padding: 0 5vw;
   transition: background var(--transition);
+  overflow: visible;
 }
 
 /* HAMBURGER BUTTON */
@@ -190,7 +191,11 @@ nav {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
+}
+@media (max-width: 400px) {
+  .nav-actions { gap: 6px; }
+  .theme-toggle { display: none; }
 }
 .theme-toggle {
   width: 42px;
@@ -530,8 +535,8 @@ nav {
 
 .products-grid, .catalog-products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 2px;
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+  gap: 16px;
   margin-top: 48px;
 }
 
@@ -753,6 +758,10 @@ nav {
 }
 .checkout-form-area { padding: 100px 5vw 40px; }
 .checkout-order-summary { padding: 100px 5vw 40px; background: var(--bg-2); }
+@media (max-width: 879px) {
+  .checkout-form-area { padding: 100px 5vw 40px; }
+  .checkout-order-summary { padding: 40px 5vw 60px; background: var(--bg-2); }
+}
 .checkout-steps { display: flex; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
 .form-section { margin-bottom: 32px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
@@ -1283,4 +1292,89 @@ footer {
   cursor: pointer;
   color: white;
   font-size: 18px;
+}
+/* ═══════════════════════════════════════════════════
+   GLOBAL MOBILE FIXES
+═══════════════════════════════════════════════════ */
+
+/* Prevent btn-primary clip-path from clipping content when full-width */
+@media (max-width: 480px) {
+  .btn-primary, .btn-outline {
+    clip-path: none;
+    border-radius: 4px;
+    width: 100%;
+    justify-content: center;
+  }
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .hero-actions .btn-primary,
+  .hero-actions .btn-outline {
+    text-align: center;
+  }
+}
+
+/* Prevent horizontal overflow on any page */
+body { max-width: 100vw; }
+
+/* Product card minimum height guard */
+.product-card-body { min-height: 120px; }
+
+/* Cart item qty controls — prevent overflow on 320px screens */
+@media (max-width: 360px) {
+  .cart-qty-btn { width: 24px !important; height: 24px !important; }
+}
+
+/* Checkout summary — remove excess top padding on mobile */
+@media (max-width: 879px) {
+  .checkout-order-summary { padding-top: 40px !important; }
+}
+
+/* Contact form full width on mobile */
+@media (max-width: 600px) {
+  .contact-section { padding-top: 88px; }
+  .contact-form .btn-primary { width: 100%; justify-content: center; clip-path: none; border-radius: 4px; }
+}
+
+/* Filter tabs horizontal scroll on narrow screens */
+@media (max-width: 600px) {
+  .filter-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .filter-tabs::-webkit-scrollbar { display: none; }
+  .filter-tab { white-space: nowrap; flex-shrink: 0; }
+}
+
+/* Product detail gallery + info stack properly */
+@media (max-width: 768px) {
+  .detail-gallery,
+  .detail-info {
+    padding: 24px 5vw !important;
+  }
+  .detail-gallery .detail-main-img {
+    height: 260px !important;
+  }
+  .detail-title { font-size: 22px !important; }
+  .detail-price { font-size: 26px !important; font-weight: 800; }
+}
+
+/* Login page — don't let left panel dominate on mobile */
+@media (max-width: 799px) {
+  .login-left { padding: 100px 5vw 24px; }
+  .login-tagline { font-size: 14px; }
+}
+
+/* About page padding on mobile */
+@media (max-width: 600px) {
+  .about-hero { padding-top: 88px; }
+}
+
+/* Marquee text size on tiny screens */
+@media (max-width: 400px) {
+  .marquee-inner { font-size: 11px; }
 }

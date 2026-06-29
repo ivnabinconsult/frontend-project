@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>CYLLUX HOMES — Seller Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="themes.js"></script>
+  <script src="mobile-nav.js"></script>
+  <style>
+    /* ── Seller Dashboard Styles ── */
+    .seller-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: calc(100vh - 68px);
+      margin-top: 68px;
+    }
+
+    /* Sidebar */
+    .seller-sidebar {
+      background: var(--bg-2);
+      border-right: 1px solid var(--border);
+      padding: 32px 0;
+      position: sticky;
+      top: 68px;
+      height: calc(100vh - 68px);
+      overflow-y: auto;
+    }
+    .sidebar-profile {
+      padding: 0 24px 28px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .sidebar-avatar {
+      width: 48px; height: 48px;
+      background: var(--crimson);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 18px; color: white;
+      margin-bottom: 12px;
+    }
+    .sidebar-name { font-weight: 700; font-size: 15px; }
+    .sidebar-role { font-size: 12px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav li a {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 24px;
+      font-size: 13px; font-weight: 500;
+      color: var(--text-secondary);
+      transition: all var(--transition);
+      border-left: 2px solid transparent;
+      text-decoration: none;
+    }
+    .sidebar-nav li a:hover { color: var(--text-primary); background: var(--bg-3); }
+    .sidebar-nav li a.active { color: var(--crimson); border-left-color: var(--crimson); background: var(--crimson-dim); }
+    .sidebar-nav .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+    .sidebar-section-label {
+      padding: 20px 24px 8px;
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted);
+    }
+
+    /* Main content */
+    .seller-main { padding: 36px 40px; background: var(--bg); overflow-y: auto; }
+
+    /* Stats bar */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 36px;
+    }
+    .stat-card {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .stat-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .stat-value { font-size: 24px; font-weight: 800; font-family: 'Poppins', sans-serif; }
+    .stat-value.crimson { color: var(--crimson); }
+    .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    /* Tabs */
+    .dash-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+    .dash-tab {
+      padding: 10px 20px; font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
+      background: none; border: none; color: var(--text-muted);
+      border-bottom: 2px solid transparent; cursor: pointer; transition: all var(--transition);
+      margin-bottom: -1px;
+    }
+    .dash-tab.active { color: var(--crimson); border-bottom-color: var(--crimson); }
+    .dash-tab:hover:not(.active) { color: var(--text-primary); }
+
+    /* Tab panels */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Product Table ── */
+    .product-table-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
+    }
+    .product-table-header h2 { font-size: 18px; font-weight: 700; }
+    .table-search {
+      display: flex; gap: 10px; align-items: center;
+    }
+    .table-search input {
+      background: var(--bg-2); border: 1px solid var(--border);
+      padding: 8px 14px; border-radius: 8px; color: var(--text-primary);
+      font-family: inherit; font-size: 13px; width: 220px;
+      outline: none; transition: border var(--transition);
+    }
+    .table-search input:focus { border-color: var(--crimson); }
+
+    .products-table {
+      width: 100%; border-collapse: collapse; font-size: 13px;
+    }
+    .products-table th {
+      background: var(--bg-2); text-align: left;
+      padding: 12px 16px; font-size: 10px; font-weight: 600;
+      letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .products-table td {
+      padding: 14px 16px; border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .products-table tr:hover td { background: var(--bg-2); }
+    .prod-thumb {
+      width: 52px; height: 52px; border-radius: 8px;
+      background: var(--bg-3); background-size: cover; background-position: center;
+      border: 1px solid var(--border); flex-shrink: 0;
+    }
+    .prod-info { display: flex; align-items: center; gap: 14px; }
+    .prod-name { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+    .prod-cat-badge {
+      display: inline-block; font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+      background: var(--crimson-dim); color: var(--crimson); border-radius: 4px;
+      padding: 2px 7px; font-weight: 600;
+    }
+    .prod-price { font-weight: 700; color: var(--crimson); font-size: 14px; }
+    .stock-badge {
+      font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px;
+    }
+    .stock-badge.in-stock { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .stock-badge.low-stock { background: rgba(234,179,8,0.12); color: #eab308; }
+    .action-btns { display: flex; gap: 8px; }
+    .btn-icon {
+      width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--bg-3); font-size: 14px; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; transition: all var(--transition);
+    }
+    .btn-icon:hover { border-color: var(--crimson); background: var(--crimson-dim); }
+    .btn-icon.delete:hover { border-color: #ef4444; background: rgba(239,68,68,0.12); }
+
+    /* ── Add/Edit Product Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: var(--overlay-bg);
+      z-index: 2000; display: flex; align-items: flex-start; justify-content: flex-end;
+      padding: 68px 0 0; opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-panel {
+      background: var(--bg-2); width: min(560px, 100vw);
+      height: calc(100vh - 68px); overflow-y: auto;
+      border-left: 1px solid var(--border);
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      display: flex; flex-direction: column;
+    }
+    .modal-overlay.open .modal-panel { transform: translateX(0); }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 28px; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; background: var(--bg-2); z-index: 10;
+    }
+    .modal-title { font-size: 18px; font-weight: 700; font-family: 'Poppins', sans-serif; }
+    .modal-close {
+      width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--bg-3); font-size: 20px; display: flex;
+      align-items: center; justify-content: center; cursor: pointer;
+      color: var(--text-muted); transition: all var(--transition);
+    }
+    .modal-close:hover { border-color: var(--crimson); color: var(--crimson); }
+    .modal-body { padding: 28px; flex: 1; }
+    .modal-footer {
+      padding: 20px 28px; border-top: 1px solid var(--border);
+      display: flex; gap: 12px;
+      position: sticky; bottom: 0; background: var(--bg-2);
+    }
+
+    /* Upload zone */
+    .upload-zone {
+      border: 2px dashed var(--border); border-radius: 12px;
+      padding: 32px 20px; text-align: center; cursor: pointer;
+      transition: all var(--transition); margin-bottom: 24px; position: relative;
+      background: var(--bg-3);
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--crimson); background: var(--crimson-dim);
+    }
+    .upload-zone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-preview {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px;
+    }
+    .preview-thumb {
+      aspect-ratio: 1; border-radius: 8px; background-size: cover; background-position: center;
+      border: 1px solid var(--border); position: relative; overflow: hidden;
+    }
+    .preview-thumb .remove-img {
+      position: absolute; top: 4px; right: 4px;
+      background: rgba(0,0,0,0.7); color: white; border: none;
+      width: 22px; height: 22px; border-radius: 4px; font-size: 12px;
+      cursor: pointer; display: none; align-items: center; justify-content: center;
+    }
+    .preview-thumb:hover .remove-img { display: flex; }
+    .upload-icon { font-size: 32px; margin-bottom: 10px; }
+    .upload-hint { font-size: 13px; color: var(--text-muted); }
+    .upload-hint strong { color: var(--crimson); }
+
+    /* Form fields */
+    .form-group { margin-bottom: 20px; }
+    .form-label {
+      display: block; font-size: 11px; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
+    }
+    .form-label .req { color: var(--crimson); }
+    .field-input {
+      width: 100%; background: var(--bg-3); border: 1px solid var(--border);
+      border-radius: 8px; padding: 11px 14px; color: var(--text-primary);
+      font-family: inherit; font-size: 14px; outline: none;
+      transition: border var(--transition);
+    }
+    .field-input:focus { border-color: var(--crimson); }
+    .field-input::placeholder { color: var(--text-muted); }
+    textarea.field-input { resize: vertical; min-height: 80px; }
+    select.field-input { cursor: pointer; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Price field special */
+    .price-field-wrap { position: relative; }
+    .price-field-wrap .currency {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      font-weight: 700; color: var(--crimson);
+    }
+    .price-field-wrap .field-input { padding-left: 30px; }
+
+    /* Character counter */
+    .char-count { font-size: 11px; color: var(--text-muted); text-align: right; margin-top: 4px; }
+
+    /* Btn variants */
+    .btn-danger {
+      background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3);
+      color: #ef4444; padding: 11px 20px; border-radius: 8px;
+      font-weight: 600; font-size: 13px; cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-danger:hover { background: rgba(239,68,68,0.25); }
+
+    /* Toast override for dashboard */
+    .dash-toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--bg-4); border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px 24px; font-size: 14px; font-weight: 500;
+      opacity: 0; transition: all 0.3s ease; z-index: 9999;
+      display: flex; align-items: center; gap: 10px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .dash-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .dash-toast.success .toast-dot { background: #22c55e; }
+    .dash-toast.error .toast-dot { background: #ef4444; }
+    .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--crimson); flex-shrink: 0; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 80px 20px;
+      color: var(--text-muted);
+    }
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+    .empty-state p { font-size: 14px; margin-bottom: 24px; }
+
+    /* ── Mobile responsive ── */
+    @media (max-width: 900px) {
+      .seller-layout { grid-template-columns: 1fr; }
+      .seller-sidebar { display: none; }
+      .seller-main { padding: 20px 16px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+      .stat-card { padding: 16px; }
+      .stat-value { font-size: 20px; }
+      .form-row-2 { grid-template-columns: 1fr; }
+      /* hide Category column — redundant with badge in product cell */
+      .products-table th:nth-child(3),
+      .products-table td:nth-child(3) { display: none; }
+      .product-table-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .table-search { width: 100%; }
+      .table-search input { flex: 1; }
+      .dash-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .dash-tab { white-space: nowrap; flex-shrink: 0; }
+    }
+
+    @media (max-width: 600px) {
+      /* hide Status column on small phones — already shown as published/draft pill inline */
+      .products-table th:nth-child(4),
+      .products-table td:nth-child(4) { display: none; }
+      .prod-name { font-size: 13px; }
+      .prod-thumb { width: 44px; height: 44px; }
+      .modal-panel { width: 100vw; border-left: none; border-top: 1px solid var(--border); }
+      .modal-overlay { align-items: flex-end; padding: 0; }
+      .modal-panel {
+        height: 92vh;
+        border-radius: 20px 20px 0 0;
+        transform: translateY(100%);
+      }
+      .modal-overlay.open .modal-panel { transform: translateY(0); }
+      .seller-main { padding: 16px 14px; }
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stat-card { padding: 14px 12px; }
+      .stat-value { font-size: 18px; }
+      .modal-body { padding: 20px 16px; }
+      .modal-footer { padding: 16px; }
+      .upload-zone { padding: 24px 16px; }
+    }
+
+    @media (max-width: 380px) {
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .stat-card { padding: 12px 10px; }
+      .stat-value { font-size: 16px; }
+      .action-btns { gap: 4px; }
+      .btn-icon { width: 28px; height: 28px; font-size: 12px; }
+    }
+
+    /* Confirm dialog */
+    .confirm-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      z-index: 3000; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .confirm-overlay.open { opacity: 1; pointer-events: all; }
+    .confirm-box {
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: 14px; padding: 32px 28px; max-width: 380px; width: 90%;
+      text-align: center;
+    }
+    .confirm-box h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .confirm-box p { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+    .confirm-actions { display: flex; gap: 12px; justify-content: center; }
+
+    /* Live badge */
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 600; color: #22c55e;
+      background: rgba(34,197,94,0.1); border-radius: 20px;
+      padding: 3px 10px;
+    }
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #22c55e; animation: pulse-dot 1.5s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+    }
+
+    /* Drag row highlight */
+    .products-table tr.dragging td { opacity: 0.5; }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav id="main-nav">
+    <div class="nav-logo" onclick="window.location.href='index.html'">
+      <div class="logo-mark">CX</div>
+      CYLLUX
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Catalog</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="seller-dashboard.html" class="active">Seller Hub</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span class="theme-label" id="theme-label">Dark</span>
+      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()"></div>
+      <button class="nav-icon-btn" onclick="window.location.href='login.html'">👤</button>
+      <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
+        🛒
+        <span class="cart-badge" id="cart-badge">0</span>
+      </button>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- LAYOUT -->
+  <div class="seller-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="seller-sidebar">
+      <div class="sidebar-profile">
+        <div class="sidebar-avatar" id="seller-avatar">S</div>
+        <div class="sidebar-name" id="seller-name">Seller Account</div>
+        <div class="sidebar-role">Verified Seller</div>
+      </div>
+      <p class="sidebar-section-label">Management</p>
+      <ul class="sidebar-nav">
+        <li><a href="#" class="active" data-tab="products" onclick="event.preventDefault();switchTab('products',this)"><span class="nav-icon">📦</span> Products</a></li>
+        <li><a href="#" data-tab="add" onclick="event.preventDefault();openModal(null)"><span class="nav-icon">➕</span> Add Product</a></li>
+      </ul>
+      <p class="sidebar-section-label">Storefront</p>
+      <ul class="sidebar-nav">
+        <li><a href="products.html" target="_blank"><span class="nav-icon">🏪</span> View Storefront</a></li>
+        <li><a href="index.html"><span class="nav-icon">🏠</span> Homepage</a></li>
+      </ul>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="seller-main">
+
+      <!-- Stats -->
+      <div class="stats-row" id="stats-row"></div>
+
+      <!-- Tabs -->
+      <div class="dash-tabs">
+        <button class="dash-tab active" data-tab="products" onclick="switchTab('products',this)">All Products</button>
+        <button class="dash-tab" data-tab="published" onclick="switchTab('published',this)">Published</button>
+        <button class="dash-tab" data-tab="drafts" onclick="switchTab('drafts',this)">Drafts</button>
+      </div>
+
+      <!-- Products panel -->
+      <div class="tab-panel active" id="tab-products">
+        <div class="product-table-header">
+          <h2>Product Listings <span class="live-badge"><span class="live-dot"></span>Live</span></h2>
+          <div class="table-search">
+            <input type="text" id="search-input" placeholder="Search products…" oninput="renderTable()">
+            <button class="btn-primary" onclick="openModal(null)" style="white-space:nowrap">+ Add Product</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="products-table" id="products-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="empty-state" style="display:none">
+          <div class="empty-icon">📦</div>
+          <h3>No products yet</h3>
+          <p>Click "Add Product" to list your first item on the storefront.</p>
+          <button class="btn-primary" onclick="openModal(null)">+ Add Your First Product</button>
+        </div>
+      </div>
+
+      <!-- Published panel -->
+      <div class="tab-panel" id="tab-published">
+        <div class="product-table-header"><h2>Published Products</h2></div>
+        <div style="overflow-x:auto">
+          <table class="products-table">
+            <thead><tr><th>Product</th><th>Price</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="pub-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Drafts panel -->
+      <div class="tab-panel" id="tab-drafts">
+        <div class="product-table-header"><h2>Drafts</h2></div>
+        <div style="overflow-x:auto">
+          <table class="products-table">
+            <thead><tr><th>Product</th><th>Price</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="draft-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ADD / EDIT MODAL -->
+  <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal-panel" id="modal-panel">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-title">Add New Product</div>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Image upload -->
+        <label class="form-label">Product Images <span class="req">*</span></label>
+        <div class="upload-preview" id="upload-preview" style="display:none"></div>
+        <div class="upload-zone" id="upload-zone">
+          <input type="file" id="img-input" accept="image/*" multiple onchange="handleFiles(this.files)">
+          <div class="upload-icon">🖼️</div>
+          <div class="upload-hint">Drag & drop images or <strong>click to browse</strong></div>
+          <div style="font-size:12px; color: var(--text-muted); margin-top:6px">JPG, PNG, WEBP — up to 5 images</div>
+        </div>
+
+        <!-- Fields -->
+        <div class="form-group">
+          <label class="form-label">Product Name <span class="req">*</span></label>
+          <input class="field-input" id="f-name" placeholder="e.g. Velvet Accent Chair" maxlength="80" oninput="countChars('f-name','name-count',80)">
+          <div class="char-count"><span id="name-count">0</span>/80</div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Category <span class="req">*</span></label>
+            <select class="field-input" id="f-cat">
+              <option value="">Select category</option>
+              <option value="interior">Interior Design</option>
+              <option value="tech">Tech & Gadgets</option>
+              <option value="furniture">Furniture & Doors</option>
+              <option value="lighting">Lighting</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Price (₦) <span class="req">*</span></label>
+            <div class="price-field-wrap">
+              <span class="currency">₦</span>
+              <input class="field-input" id="f-price" type="number" min="0" placeholder="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description <span class="req">*</span></label>
+          <textarea class="field-input" id="f-desc" placeholder="Describe the product — material, size, usage…" maxlength="300" rows="4" oninput="countChars('f-desc','desc-count',300)"></textarea>
+          <div class="char-count"><span id="desc-count">0</span>/300</div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Stock Status</label>
+            <select class="field-input" id="f-stock">
+              <option value="in-stock">In Stock</option>
+              <option value="low-stock">Low Stock</option>
+              <option value="out-of-stock">Out of Stock</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Listing Status</label>
+            <select class="field-input" id="f-status">
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="saveProduct()" style="flex:1; justify-content:center">Save & Publish</button>
+        <button class="btn-outline" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM DELETE -->
+  <div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-box">
+      <h3>Delete Product?</h3>
+      <p>This will remove the product from your storefront immediately. This cannot be undone.</p>
+      <div class="confirm-actions">
+        <button class="btn-danger" id="confirm-yes">Delete</button>
+        <button class="btn-outline" onclick="closeConfirm()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="dash-toast" id="dash-toast">
+    <span class="toast-dot"></span>
+    <span id="dash-toast-msg"></span>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="cart.js"></script>
+  <script>
+    /* ═══════════════════════════════════════════════
+       DATA LAYER — seller products stored in localStorage
+       Keys: cyllux_seller_products (array)
+       On each change: mirror edits/adds/deletes into
+       cyllux_catalog_overrides which catalog pages read.
+    ═══════════════════════════════════════════════ */
+
+    const STORAGE_KEY = 'cyllux_seller_products';
+    const CAT_LABELS = {
+      interior: 'Interior Design',
+      tech: 'Smart Home',
+      furniture: 'Furniture & Doors',
+      lighting: 'Lighting'
+    };
+
+    let sellerProducts = loadSellerProducts();
+    let currentImages = [];   // base64 strings for current edit
+    let editingId = null;     // null = new, string = editing existing
+    let deleteTarget = null;
+    let activeTab = 'products';
+
+    /* ── Storage helpers ── */
+    function loadSellerProducts() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch { return []; }
+    }
+
+    function persistProducts() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(sellerProducts));
+      // Merge into global catalog override so storefront picks up changes
+      const override = JSON.parse(localStorage.getItem('cyllux_catalog_overrides') || '[]');
+      // Remove stale seller entries and re-add
+      const cleaned = override.filter(p => !p._seller);
+      const merged = [...cleaned, ...sellerProducts.filter(p => p.status === 'published').map(p => ({ ...p, _seller: true }))];
+      localStorage.setItem('cyllux_catalog_overrides', JSON.stringify(merged));
+    }
+
+    /* ── Stats ── */
+    function renderStats() {
+      const total = sellerProducts.length;
+      const pub = sellerProducts.filter(p => p.status === 'published').length;
+      const drafts = sellerProducts.filter(p => p.status === 'draft').length;
+      const cats = new Set(sellerProducts.map(p => p.catKey)).size;
+
+      document.getElementById('stats-row').innerHTML = `
+        <div class="stat-card">
+          <div class="stat-label">Total Products</div>
+          <div class="stat-value">${total}</div>
+          <div class="stat-sub">in your store</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Published</div>
+          <div class="stat-value crimson">${pub}</div>
+          <div class="stat-sub">live on storefront</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Drafts</div>
+          <div class="stat-value">${drafts}</div>
+          <div class="stat-sub">not yet visible</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Categories</div>
+          <div class="stat-value">${cats}</div>
+          <div class="stat-sub">product types</div>
+        </div>
+      `;
+    }
+
+    /* ── Table rendering ── */
+    function buildRows(list) {
+      if (!list.length) return '';
+      return list.map(p => {
+        const thumb = p.imgs && p.imgs[0] ? p.imgs[0] : '';
+        const stockBadge = p.stock === 'low-stock'
+          ? '<span class="stock-badge low-stock">Low Stock</span>'
+          : p.stock === 'out-of-stock'
+          ? '<span class="stock-badge" style="background:rgba(239,68,68,0.12);color:#ef4444">Out of Stock</span>'
+          : '<span class="stock-badge in-stock">In Stock</span>';
+        const statusPill = p.status === 'published'
+          ? '<span style="color:#22c55e;font-weight:600;font-size:12px">● Published</span>'
+          : '<span style="color:var(--text-muted);font-weight:600;font-size:12px">○ Draft</span>';
+        return `
+          <tr>
+            <td>
+              <div class="prod-info">
+                <div class="prod-thumb" style="background-image:url('${thumb}')"></div>
+                <div>
+                  <div class="prod-name">${escHtml(p.name)}</div>
+                  <span class="prod-cat-badge">${escHtml(CAT_LABELS[p.catKey] || p.catKey)}</span>
+                </div>
+              </div>
+            </td>
+            <td><span class="prod-price">${formatNGN(p.price)}</span></td>
+            <td>${escHtml(CAT_LABELS[p.catKey] || p.catKey)}</td>
+            <td>${stockBadge}</td>
+            <td>
+              <div class="action-btns">
+                <button class="btn-icon" title="Edit" onclick="openModal('${escHtml(p.id)}')">✏️</button>
+                <button class="btn-icon" title="Toggle status" onclick="toggleStatus('${escHtml(p.id)}')">${p.status === 'published' ? '🙈' : '👁️'}</button>
+                <button class="btn-icon delete" title="Delete" onclick="confirmDelete('${escHtml(p.id)}')">🗑️</button>
+              </div>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    function renderTable() {
+      const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+      const filtered = sellerProducts.filter(p =>
+        p.name.toLowerCase().includes(q) || (CAT_LABELS[p.catKey] || '').toLowerCase().includes(q)
+      );
+
+      const tbody = document.getElementById('table-body');
+      const empty = document.getElementById('empty-state');
+      if (sellerProducts.length === 0) {
+        if (tbody) tbody.innerHTML = '';
+        if (empty) empty.style.display = 'block';
+      } else {
+        if (empty) empty.style.display = 'none';
+        if (tbody) tbody.innerHTML = buildRows(filtered);
+      }
+
+      const pubBody = document.getElementById('pub-body');
+      if (pubBody) pubBody.innerHTML = buildRows(sellerProducts.filter(p => p.status === 'published'));
+      const draftBody = document.getElementById('draft-body');
+      if (draftBody) draftBody.innerHTML = buildRows(sellerProducts.filter(p => p.status === 'draft'));
+    }
+
+    /* ── Tab switching ── */
+    function switchTab(tab, el) {
+      activeTab = tab;
+      document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      if (el) el.classList.add('active');
+      else {
+        document.querySelectorAll(`.dash-tab[data-tab="${tab}"]`).forEach(t => t.classList.add('active'));
+      }
+      const panel = document.getElementById(`tab-${tab}`);
+      if (panel) panel.classList.add('active');
+      return false;
+    }
+
+    /* ── Modal ── */
+    function openModal(id) {
+      editingId = id || null;
+      currentImages = [];
+
+      const overlay = document.getElementById('modal-overlay');
+      const title = document.getElementById('modal-title');
+      overlay.classList.add('open');
+
+      if (id) {
+        const p = sellerProducts.find(x => x.id === id);
+        if (!p) return;
+        title.textContent = 'Edit Product';
+        document.getElementById('f-name').value = p.name;
+        document.getElementById('f-cat').value = p.catKey;
+        document.getElementById('f-price').value = p.price;
+        document.getElementById('f-desc').value = p.desc;
+        document.getElementById('f-stock').value = p.stock || 'in-stock';
+        document.getElementById('f-status').value = p.status || 'published';
+        countChars('f-name','name-count',80);
+        countChars('f-desc','desc-count',300);
+        currentImages = [...(p.imgs || [])];
+        renderImagePreviews();
+      } else {
+        title.textContent = 'Add New Product';
+        clearForm();
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('open');
+      editingId = null;
+      currentImages = [];
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('modal-overlay')) closeModal();
+    }
+
+    function clearForm() {
+      ['f-name','f-price','f-desc'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.value = '';
+      });
+      document.getElementById('f-cat').value = '';
+      document.getElementById('f-stock').value = 'in-stock';
+      document.getElementById('f-status').value = 'published';
+      currentImages = [];
+      renderImagePreviews();
+      document.getElementById('name-count').textContent = '0';
+      document.getElementById('desc-count').textContent = '0';
+    }
+
+    /* ── Image handling ── */
+    function handleFiles(files) {
+      const remaining = 5 - currentImages.length;
+      const toProcess = Array.from(files).slice(0, remaining);
+      let loaded = 0;
+      toProcess.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          currentImages.push(e.target.result);
+          loaded++;
+          if (loaded === toProcess.length) renderImagePreviews();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderImagePreviews() {
+      const preview = document.getElementById('upload-preview');
+      const zone = document.getElementById('upload-zone');
+      if (!preview || !zone) return;
+
+      if (currentImages.length === 0) {
+        preview.style.display = 'none';
+        zone.style.display = 'block';
+        return;
+      }
+
+      preview.style.display = 'grid';
+      zone.style.display = currentImages.length < 5 ? 'block' : 'none';
+
+      preview.innerHTML = currentImages.map((src, i) => `
+        <div class="preview-thumb" style="background-image:url('${src}')">
+          <button class="remove-img" onclick="removeImage(${i})">×</button>
+        </div>
+      `).join('');
+    }
+
+    function removeImage(i) {
+      currentImages.splice(i, 1);
+      renderImagePreviews();
+    }
+
+    /* Drag-over styling — wired after DOM ready */
+    document.addEventListener('DOMContentLoaded', () => {
+      const zone = document.getElementById('upload-zone');
+      if (zone) {
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+        zone.addEventListener('drop', e => {
+          e.preventDefault(); zone.classList.remove('drag-over');
+          handleFiles(e.dataTransfer.files);
+        });
+      }
+    });
+
+    /* ── Save product ── */
+    function saveProduct() {
+      const name = document.getElementById('f-name').value.trim();
+      const catKey = document.getElementById('f-cat').value;
+      const price = parseInt(document.getElementById('f-price').value) || 0;
+      const desc = document.getElementById('f-desc').value.trim();
+      const stock = document.getElementById('f-stock').value;
+      const status = document.getElementById('f-status').value;
+
+      if (!name) return dashToast('Product name is required', 'error');
+      if (!catKey) return dashToast('Please select a category', 'error');
+      if (!price || price <= 0) return dashToast('Enter a valid price', 'error');
+      if (!desc) return dashToast('Description is required', 'error');
+      if (currentImages.length === 0) return dashToast('Upload at least one image', 'error');
+
+      const id = editingId || 'seller-' + Date.now() + '-' + Math.random().toString(36).slice(2,7);
+
+      const product = {
+        id,
+        name,
+        cat: CAT_LABELS[catKey] || catKey,
+        catKey,
+        price,
+        desc,
+        imgs: currentImages,
+        stock,
+        status,
+        _seller: true,
+        updatedAt: new Date().toISOString()
+      };
+
+      if (editingId) {
+        const idx = sellerProducts.findIndex(p => p.id === editingId);
+        if (idx !== -1) sellerProducts[idx] = product;
+        dashToast('Product updated successfully', 'success');
+      } else {
+        sellerProducts.unshift(product);
+        dashToast('Product listed on storefront!', 'success');
+      }
+
+      persistProducts();
+      renderStats();
+      renderTable();
+      closeModal();
+    }
+
+    /* ── Toggle published/draft ── */
+    function toggleStatus(id) {
+      const p = sellerProducts.find(x => x.id === id);
+      if (!p) return;
+      p.status = p.status === 'published' ? 'draft' : 'published';
+      p.updatedAt = new Date().toISOString();
+      persistProducts();
+      renderStats();
+      renderTable();
+      dashToast(p.status === 'published' ? 'Product is now live' : 'Moved to drafts', 'success');
+    }
+
+    /* ── Delete ── */
+    function confirmDelete(id) {
+      deleteTarget = id;
+      document.getElementById('confirm-overlay').classList.add('open');
+    }
+    function closeConfirm() {
+      deleteTarget = null;
+      document.getElementById('confirm-overlay').classList.remove('open');
+    }
+    document.getElementById('confirm-yes').addEventListener('click', () => {
+      if (!deleteTarget) return;
+      sellerProducts = sellerProducts.filter(p => p.id !== deleteTarget);
+      persistProducts();
+      renderStats();
+      renderTable();
+      closeConfirm();
+      dashToast('Product deleted', 'error');
+    });
+
+    /* ── Helpers ── */
+    function countChars(inputId, countId, max) {
+      const val = (document.getElementById(inputId)?.value || '').length;
+      const el = document.getElementById(countId);
+      if (el) el.textContent = val;
+    }
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    function dashToast(msg, type = 'success') {
+      const t = document.getElementById('dash-toast');
+      const m = document.getElementById('dash-toast-msg');
+      if (!t || !m) return;
+      m.textContent = msg;
+      t.className = `dash-toast ${type} show`;
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    /* ── Sidebar seller name ── */
+    function initSellerProfile() {
+      const name = localStorage.getItem('cyllux_seller_name') || 'Seller';
+      document.getElementById('seller-name').textContent = name;
+      document.getElementById('seller-avatar').textContent = name[0].toUpperCase();
+    }
+
+    /* ── Boot ── */
+    document.addEventListener('DOMContentLoaded', () => {
+      initSellerProfile();
+      renderStats();
+      renderTable();
+    });
+  </script>
+</body>
+</html>
