@@ -4,11 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>CYLLUX HOMES — Seller Dashboard</title>
+  <script>
+    // Early gate — runs before the rest of the page renders, so a
+    // logged-out visitor never sees a flash of the dashboard.
+    (function () {
+      try {
+        const session = JSON.parse(localStorage.getItem('cyllux_session') || 'null');
+        if (!session || session.role !== 'seller') {
+          window.location.replace('login.html?next=seller-dashboard.html');
+        }
+      } catch {
+        window.location.replace('login.html?next=seller-dashboard.html');
+      }
+    }());
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="themes.js"></script>
   <script src="mobile-nav.js"></script>
+  <script src="auth.js"></script>
   <style>
     /* ── Seller Dashboard Styles ── */
     .seller-layout {
@@ -381,7 +396,7 @@
     <div class="nav-actions">
       <span class="theme-label" id="theme-label">Dark</span>
       <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()"></div>
-      <button class="nav-icon-btn" onclick="window.location.href='login.html'">👤</button>
+      <button class="nav-icon-btn" id="nav-account-btn" onclick="goAccount()">👤</button>
       <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
         🛒
         <span class="cart-badge" id="cart-badge">0</span>
@@ -406,11 +421,16 @@
       <ul class="sidebar-nav">
         <li><a href="#" class="active" data-tab="products" onclick="event.preventDefault();switchTab('products',this)"><span class="nav-icon">📦</span> Products</a></li>
         <li><a href="#" data-tab="add" onclick="event.preventDefault();openModal(null)"><span class="nav-icon">➕</span> Add Product</a></li>
+        <li><a href="#" data-tab="sales" onclick="event.preventDefault();switchTab('sales',this)"><span class="nav-icon">💰</span> Sales</a></li>
       </ul>
       <p class="sidebar-section-label">Storefront</p>
       <ul class="sidebar-nav">
         <li><a href="products.html" target="_blank"><span class="nav-icon">🏪</span> View Storefront</a></li>
         <li><a href="index.html"><span class="nav-icon">🏠</span> Homepage</a></li>
+      </ul>
+      <p class="sidebar-section-label">Account</p>
+      <ul class="sidebar-nav">
+        <li><a href="#" onclick="event.preventDefault();logout()"><span class="nav-icon">🚪</span> Log Out</a></li>
       </ul>
     </aside>
 
@@ -425,6 +445,7 @@
         <button class="dash-tab active" data-tab="products" onclick="switchTab('products',this)">All Products</button>
         <button class="dash-tab" data-tab="published" onclick="switchTab('published',this)">Published</button>
         <button class="dash-tab" data-tab="drafts" onclick="switchTab('drafts',this)">Drafts</button>
+        <button class="dash-tab" data-tab="sales" onclick="switchTab('sales',this)">Sales</button>
       </div>
 
       <!-- Products panel -->
@@ -477,6 +498,32 @@
             <thead><tr><th>Product</th><th>Price</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="draft-body"></tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Sales panel -->
+      <div class="tab-panel" id="tab-sales">
+        <div class="stats-row" id="sales-stats-row"></div>
+        <div class="product-table-header"><h2>Units Sold by Product</h2></div>
+        <div style="overflow-x:auto; margin-bottom:36px">
+          <table class="products-table">
+            <thead><tr><th>Product</th><th>Units Sold</th><th>Revenue</th></tr></thead>
+            <tbody id="sales-by-product-body"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="sales-empty-state" style="display:none">
+          <div class="empty-icon">💰</div>
+          <h3>No sales yet</h3>
+          <p>Once buyers check out with your products, sales will show up here.</p>
+        </div>
+        <div id="sales-orders-section" style="display:none">
+          <div class="product-table-header"><h2>Recent Orders</h2></div>
+          <div style="overflow-x:auto">
+            <table class="products-table">
+              <thead><tr><th>Order</th><th>Buyer</th><th>Items</th><th>Amount</th><th>Date</th></tr></thead>
+              <tbody id="sales-orders-body"></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -583,10 +630,20 @@
   <script src="cart.js"></script>
   <script>
     /* ═══════════════════════════════════════════════
-       DATA LAYER — seller products stored in localStorage
-       Keys: cyllux_seller_products (array)
-       On each change: mirror edits/adds/deletes into
-       cyllux_catalog_overrides which catalog pages read.
+       AUTH GATE — this page requires a signed-in seller.
+       requireSellerAuth() redirects to login.html if not,
+       so everything below only runs for a real seller session.
+    ═══════════════════════════════════════════════ */
+    const currentSeller = requireSellerAuth();
+
+    /* ═══════════════════════════════════════════════
+       DATA LAYER — ALL sellers' products live in one
+       localStorage array (cyllux_seller_products), each
+       tagged with a sellerId. This page only ever shows/
+       edits the slice belonging to currentSeller.
+       On each change: rebuild cyllux_catalog_overrides
+       from EVERY seller's published products, since that's
+       what the public storefront pages read.
     ═══════════════════════════════════════════════ */
 
     const STORAGE_KEY = 'cyllux_seller_products';
@@ -597,27 +654,37 @@
       lighting: 'Lighting'
     };
 
-    let sellerProducts = loadSellerProducts();
+    let sellerProducts = currentSeller ? loadSellerProducts() : [];
     let currentImages = [];   // base64 strings for current edit
     let editingId = null;     // null = new, string = editing existing
     let deleteTarget = null;
     let activeTab = 'products';
 
     /* ── Storage helpers ── */
-    function loadSellerProducts() {
+    function loadAllSellerProducts() {
       try {
         return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
       } catch { return []; }
     }
 
+    // Only this seller's own products, for display/editing.
+    function loadSellerProducts() {
+      return loadAllSellerProducts().filter(p => p.sellerId === currentSeller.email);
+    }
+
     function persistProducts() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(sellerProducts));
-      // Merge into global catalog override so storefront picks up changes
-      const override = JSON.parse(localStorage.getItem('cyllux_catalog_overrides') || '[]');
-      // Remove stale seller entries and re-add
-      const cleaned = override.filter(p => !p._seller);
-      const merged = [...cleaned, ...sellerProducts.filter(p => p.status === 'published').map(p => ({ ...p, _seller: true }))];
-      localStorage.setItem('cyllux_catalog_overrides', JSON.stringify(merged));
+      // Splice this seller's current list back into the full cross-seller
+      // list, keeping every other seller's products untouched.
+      const others = loadAllSellerProducts().filter(p => p.sellerId !== currentSeller.email);
+      const all = [...others, ...sellerProducts];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+
+      // Rebuild the storefront override from EVERY seller's published
+      // products (not just this one), since that's what catalog pages read.
+      const publishedAcrossAllSellers = all
+        .filter(p => p.status === 'published')
+        .map(p => ({ ...p, _seller: true }));
+      localStorage.setItem('cyllux_catalog_overrides', JSON.stringify(publishedAcrossAllSellers));
     }
 
     /* ── Stats ── */
@@ -722,6 +789,7 @@
       }
       const panel = document.getElementById(`tab-${tab}`);
       if (panel) panel.classList.add('active');
+      if (tab === 'sales') renderSales();
       return false;
     }
 
@@ -860,6 +928,7 @@
         stock,
         status,
         _seller: true,
+        sellerId: currentSeller.email,
         updatedAt: new Date().toISOString()
       };
 
@@ -933,16 +1002,126 @@
 
     /* ── Sidebar seller name ── */
     function initSellerProfile() {
-      const name = localStorage.getItem('cyllux_seller_name') || 'Seller';
+      const name = currentSeller.name || 'Seller';
       document.getElementById('seller-name').textContent = name;
       document.getElementById('seller-avatar').textContent = name[0].toUpperCase();
+      const roleEl = document.querySelector('.sidebar-role');
+      if (roleEl) roleEl.textContent = currentSeller.email;
+    }
+
+    /* ═══════════════════════════════════════════════
+       SALES — derived from real orders placed at checkout
+       (cyllux_orders), filtered down to line items whose
+       sellerId matches this seller. This is what makes
+       "items sold" and revenue real instead of guessed.
+    ═══════════════════════════════════════════════ */
+    function loadOrders() {
+      try { return JSON.parse(localStorage.getItem('cyllux_orders') || '[]'); }
+      catch { return []; }
+    }
+
+    // All order line-items across all orders that belong to this seller,
+    // each annotated with its parent order's id/date/buyer for display.
+    function getSellerSaleLines() {
+      const orders = loadOrders();
+      const lines = [];
+      orders.forEach(order => {
+        order.items.forEach(item => {
+          if (item.sellerId === currentSeller.email) {
+            lines.push({ ...item, orderId: order.orderId, date: order.date, buyerName: order.buyerName });
+          }
+        });
+      });
+      return lines;
+    }
+
+    function renderSales() {
+      const lines = getSellerSaleLines();
+      const unitsSold = lines.reduce((sum, l) => sum + l.qty, 0);
+      const revenue = lines.reduce((sum, l) => sum + (l.price * l.qty), 0);
+      const orderIds = new Set(lines.map(l => l.orderId));
+
+      document.getElementById('sales-stats-row').innerHTML = `
+        <div class="stat-card">
+          <div class="stat-label">Units Sold</div>
+          <div class="stat-value">${unitsSold}</div>
+          <div class="stat-sub">total items</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Revenue</div>
+          <div class="stat-value crimson">${formatNGN(revenue)}</div>
+          <div class="stat-sub">gross, before fees</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Orders</div>
+          <div class="stat-value">${orderIds.size}</div>
+          <div class="stat-sub">containing your items</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg. Order Value</div>
+          <div class="stat-value">${formatNGN(orderIds.size ? Math.round(revenue / orderIds.size) : 0)}</div>
+          <div class="stat-sub">per order, your items</div>
+        </div>
+      `;
+
+      const emptyState = document.getElementById('sales-empty-state');
+      const ordersSection = document.getElementById('sales-orders-section');
+
+      if (lines.length === 0) {
+        document.getElementById('sales-by-product-body').innerHTML = '';
+        emptyState.style.display = 'block';
+        ordersSection.style.display = 'none';
+        return;
+      }
+      emptyState.style.display = 'none';
+      ordersSection.style.display = 'block';
+
+      // Units sold + revenue grouped by product
+      const byProduct = {};
+      lines.forEach(l => {
+        if (!byProduct[l.id]) byProduct[l.id] = { name: l.name, qty: 0, revenue: 0 };
+        byProduct[l.id].qty += l.qty;
+        byProduct[l.id].revenue += l.price * l.qty;
+      });
+      document.getElementById('sales-by-product-body').innerHTML = Object.values(byProduct)
+        .sort((a, b) => b.revenue - a.revenue)
+        .map(p => `
+          <tr>
+            <td class="prod-name">${escHtml(p.name)}</td>
+            <td>${p.qty}</td>
+            <td class="prod-price">${formatNGN(p.revenue)}</td>
+          </tr>
+        `).join('');
+
+      // Recent orders, most recent first
+      const orders = loadOrders()
+        .filter(o => orderIds.has(o.orderId))
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 20);
+      document.getElementById('sales-orders-body').innerHTML = orders.map(o => {
+        const myItems = o.items.filter(i => i.sellerId === currentSeller.email);
+        const myTotal = myItems.reduce((s, i) => s + i.price * i.qty, 0);
+        const itemSummary = myItems.map(i => `${escHtml(i.name)} ×${i.qty}`).join(', ');
+        const dateStr = new Date(o.date).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' });
+        return `
+          <tr>
+            <td style="font-size:12px;color:var(--text-muted)">${escHtml(o.orderId)}</td>
+            <td>${escHtml(o.buyerName || 'Guest')}</td>
+            <td style="font-size:13px">${itemSummary}</td>
+            <td class="prod-price">${formatNGN(myTotal)}</td>
+            <td style="font-size:12px;color:var(--text-muted)">${dateStr}</td>
+          </tr>
+        `;
+      }).join('');
     }
 
     /* ── Boot ── */
     document.addEventListener('DOMContentLoaded', () => {
+      if (!currentSeller) return; // requireSellerAuth() already redirected
       initSellerProfile();
       renderStats();
       renderTable();
+      renderSales();
     });
   </script>
 </body>

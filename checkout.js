@@ -39,6 +39,40 @@ function selectPayment(el) {
   el.classList.add('active');
 }
 
+// Persists a completed order so seller dashboards can compute real
+// "items sold" / revenue stats instead of just tracking inventory.
+function recordOrder(buyerInfo) {
+  const subtotal = getCartTotal();
+  const vat = Math.round(subtotal * 0.075);
+  const total = subtotal + vat;
+
+  const session = typeof getSession === 'function' ? getSession() : null;
+
+  const order = {
+    orderId: 'ord-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+    date: new Date().toISOString(),
+    buyerEmail: session?.email || buyerInfo.email,
+    buyerName: `${buyerInfo.firstName} ${buyerInfo.lastName}`.trim(),
+    items: cart.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      qty: item.qty,
+      sellerId: item.sellerId || null
+    })),
+    subtotal,
+    vat,
+    total
+  };
+
+  let orders = [];
+  try { orders = JSON.parse(localStorage.getItem('cyllux_orders') || '[]'); } catch { orders = []; }
+  orders.push(order);
+  localStorage.setItem('cyllux_orders', JSON.stringify(orders));
+
+  return order;
+}
+
 function placeOrder() {
   if (cart.length === 0) {
     showToast('Your cart is empty');
@@ -55,7 +89,8 @@ function placeOrder() {
     return;
   }
   
-  // Process order
+  // Process order — record it before the cart is cleared
+  recordOrder({ firstName, lastName, email });
   clearCart();
   showToast('Order placed successfully! Thank you for shopping with Cyllux Homes.');
   setTimeout(() => {

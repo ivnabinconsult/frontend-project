@@ -31,7 +31,7 @@ function changeQty(delta) {
 function addCurrentToCart() {
   if (currentProduct) {
     for (let i = 0; i < currentQty; i++) {
-      addToCart(currentProduct.id, currentProduct.name, currentProduct.price, currentProduct.imgs[0]);
+      addToCart(currentProduct.id, currentProduct.name, currentProduct.price, currentProduct.imgs[0], currentProduct.sellerId);
     }
     showToast(`Added ${currentQty} × ${currentProduct.name} to cart`);
   }

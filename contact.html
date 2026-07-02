@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="styles.css">
   <script src="themes.js"></script>
   <script src="mobile-nav.js"></script>
+  <script src="auth.js"></script>
 </head>
 <body>
   <nav id="main-nav">
@@ -25,7 +26,7 @@
     <div class="nav-actions">
       <span class="theme-label" id="theme-label">Dark</span>
       <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()"></div>
-      <button class="nav-icon-btn" onclick="window.location.href='login.html'">👤</button>
+      <button class="nav-icon-btn" id="nav-account-btn" onclick="goAccount()">👤</button>
       <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
         🛒
         <span class="cart-badge" id="cart-badge">0</span>

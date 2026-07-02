@@ -32,7 +32,7 @@ function renderCatalog() {
         <div class="product-card-desc">${product.desc.substring(0, 60)}...</div>
         <div class="product-card-footer">
           <div><span class="product-price">${formatNGN(product.price)}</span></div>
-          <button class="card-add-btn" onclick="event.stopPropagation();addToCart('${product.id}','${product.name}',${product.price},'${product.imgs[0]}')">+</button>
+          <button class="card-add-btn" onclick="event.stopPropagation();addToCart('${product.id}','${product.name}',${product.price},'${product.imgs[0]}','${product.sellerId || ''}')">+</button>
         </div>
       </div>
     </div>

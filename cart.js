@@ -14,7 +14,7 @@ function updateCartBadge() {
   }
 }
 
-function addToCart(id, name, price, img) {
+function addToCart(id, name, price, img, sellerId) {
   // Compare ids as strings. Ids can arrive as numbers from one caller and
   // strings from another (e.g. from a data-id HTML attribute), and a plain
   // === would otherwise treat 5 and "5" as two different products.
@@ -22,7 +22,10 @@ function addToCart(id, name, price, img) {
   if (existing) {
     existing.qty++;
   } else {
-    cart.push({ id, name, price: Number(price) || 0, qty: 1, img: img || '' });
+    // sellerId is undefined for the default house catalog and set for
+    // seller-listed products — carried through so a placed order can be
+    // credited to the right seller's dashboard.
+    cart.push({ id, name, price: Number(price) || 0, qty: 1, img: img || '', sellerId: sellerId || null });
   }
   saveCart();
   showToast(`Added ${name} to cart`);
