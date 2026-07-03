@@ -2,57 +2,57 @@
    CSS CUSTOM PROPERTIES — THEME SYSTEM
 ═══════════════════════════════════════════════════ */
 :root {
-  /* Deep oxblood red instead of a bright "candy" crimson — reads richer,
-     more premium, and pairs better with near-black than a neon red does. */
-  --crimson: #A31E34;
-  --crimson-dim: rgba(163,30,52,0.14);
-  --crimson-glow: rgba(163,30,52,0.35);
-  --crimson-hover: #C4263F;
-  --crimson-deep: #6E1424;
-  /* Muted brass/gold — used sparingly (prices, flourishes, dividers) as
-     the single premium accent. Restraint is what keeps it luxe, not loud. */
-  --gold: #C9A227;
-  --gold-soft: #E4C766;
-  --gold-dim: rgba(201,162,39,0.16);
+  /* Sharp, saturated red — punchier than the muted oxblood version, still
+     reads rich against black rather than looking neon/plastic. */
+  --crimson: #E8112F;
+  --crimson-dim: rgba(232,17,47,0.14);
+  --crimson-glow: rgba(232,17,47,0.4);
+  --crimson-hover: #FF2E4D;
+  --crimson-deep: #9E0E24;
+  /* Vivid gold accent — brighter than brass, used sparingly (prices,
+     flourishes, dividers) so it still reads as an accent, not a theme. */
+  --gold: #F0B429;
+  --gold-soft: #FFD666;
+  --gold-dim: rgba(240,180,41,0.18);
   --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
 }
 
 [data-theme="dark"] {
-  --bg: #060505;
-  --bg-2: #0c0a0a;
-  --bg-3: #121010;
-  --bg-4: #1a1616;
-  --bg-card: #0e0c0c;
-  --border: rgba(255,255,255,0.07);
-  --border-active: rgba(163,30,52,0.45);
-  --text-primary: #f5f1ec;
-  --text-secondary: #a89e97;
-  --text-muted: #5c5450;
-  --nav-bg: rgba(6,5,5,0.92);
-  --input-bg: #0c0a0a;
-  --input-border: rgba(255,255,255,0.1);
-  --card-shadow: 0 8px 40px rgba(0,0,0,0.65);
-  --glow: 0 0 30px rgba(163,30,52,0.32), 0 0 60px rgba(163,30,52,0.12);
-  --overlay-bg: rgba(4,3,3,0.88);
+  --bg: #030303;
+  --bg-2: #0a0808;
+  --bg-3: #100d0d;
+  --bg-4: #191414;
+  --bg-card: #0c0a0a;
+  --border: rgba(255,255,255,0.08);
+  --border-active: rgba(232,17,47,0.5);
+  --text-primary: #ffffff;
+  --text-secondary: #b3a9a2;
+  --text-muted: #665e59;
+  --nav-bg: rgba(3,3,3,0.92);
+  --input-bg: #0a0808;
+  --input-border: rgba(255,255,255,0.12);
+  --card-shadow: 0 8px 40px rgba(0,0,0,0.7);
+  --glow: 0 0 30px rgba(232,17,47,0.4), 0 0 60px rgba(232,17,47,0.15);
+  --overlay-bg: rgba(2,2,2,0.9);
 }
 
 [data-theme="light"] {
-  --bg: #fdfcfa;
-  --bg-2: #f8f5f1;
-  --bg-3: #f1ece5;
+  --bg: #ffffff;
+  --bg-2: #f9f6f2;
+  --bg-3: #f2ede6;
   --bg-4: #e9e2d8;
   --bg-card: #ffffff;
-  --border: rgba(20,16,14,0.09);
-  --border-active: rgba(163,30,52,0.32);
-  --text-primary: #16110f;
+  --border: rgba(20,16,14,0.1);
+  --border-active: rgba(232,17,47,0.35);
+  --text-primary: #111111;
   --text-secondary: #5c5450;
   --text-muted: #a89e97;
-  --nav-bg: rgba(253,252,250,0.92);
-  --input-bg: #f8f5f1;
-  --input-border: rgba(20,16,14,0.14);
-  --card-shadow: 0 4px 24px rgba(20,16,14,0.08);
-  --glow: 0 4px 20px rgba(163,30,52,0.15), 0 8px 40px rgba(163,30,52,0.08);
-  --overlay-bg: rgba(253,252,250,0.88);
+  --nav-bg: rgba(255,255,255,0.92);
+  --input-bg: #f9f6f2;
+  --input-border: rgba(20,16,14,0.16);
+  --card-shadow: 0 4px 24px rgba(20,16,14,0.1);
+  --glow: 0 4px 20px rgba(232,17,47,0.18), 0 8px 40px rgba(232,17,47,0.1);
+  --overlay-bg: rgba(255,255,255,0.88);
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1210,7 +1210,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 24px rgba(163,30,52,0.45);
+  box-shadow: 0 4px 24px rgba(232,17,47,0.45);
   transition: transform 0.2s;
   z-index: 9998;
 }
