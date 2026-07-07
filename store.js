@@ -470,7 +470,7 @@
       : '<span class="product-price-current">' + money(product.price) + '</span>';
 
     return (
-      '<article class="product-card" data-category="' + escapeHtml((product.category || '').toLowerCase()) + '" data-id="' + product.id + '">' +
+      '<article class="product-card" data-category="' + escapeHtml((product.category || '').toLowerCase()) + '" data-id="' + product.id + '" data-price="' + product.price + '" data-stock="' + (product.stock || 0) + '" data-sale="' + (onSale ? '1' : '0') + '" data-name="' + escapeHtml((product.name || '').toLowerCase()) + '" data-created="' + (product.createdAt || 0) + '">' +
         '<div class="product-img">' + img + badge +
           '<button class="product-wishlist cy-wishlist" data-id="' + product.id + '" aria-label="Add to wishlist">' +
             '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>' +
@@ -516,6 +516,154 @@
 
     wireProductGridEvents(grid);
     wireCategoryTabs();
+    wireShopFilters();
+  }
+
+  // ---------- shop sidebar filters (category / price / stock / sale / sort) ----------
+  const CATEGORY_FILTER_KEYWORDS = {
+    'interior design': ['interior', 'design', 'decor', 'living'],
+    'tech & gadgets': ['tech', 'gadget', 'electronic'],
+    'household furniture': ['furniture', 'chair', 'sofa', 'table', 'household'],
+    'lighting': ['lighting', 'lamp', 'light'],
+    'decor': ['decor', 'accent', 'ornament']
+  };
+
+  function wireShopFilters() {
+    const sidebar = document.querySelector('.shop-sidebar');
+    const grid = document.getElementById('productGrid');
+    if (!sidebar || !grid) return;
+
+    const categoryLabels = Array.from(sidebar.querySelectorAll('.filter-group:nth-of-type(1) .filter-list label'));
+    const allCheckbox = categoryLabels[0] ? categoryLabels[0].querySelector('input') : null;
+    const categoryCheckboxes = categoryLabels.slice(1);
+    const inStockCheckbox = sidebar.querySelector('.filter-group:nth-of-type(3) .filter-list label:nth-of-type(1) input');
+    const onSaleCheckbox = sidebar.querySelector('.filter-group:nth-of-type(3) .filter-list label:nth-of-type(2) input');
+    const priceInputs = sidebar.querySelectorAll('.price-range input');
+    const minPriceInput = priceInputs[0];
+    const maxPriceInput = priceInputs[1];
+    const sortSelect = document.querySelector('.shop-sort');
+
+    // URL ?category= support (from homepage category links / footer links)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlCategory = (urlParams.get('category') || '').toLowerCase().trim();
+
+    function applyFilters() {
+      const checkedCategoryKeywords = [];
+      categoryCheckboxes.forEach(label => {
+        const input = label.querySelector('input');
+        if (input && input.checked) {
+          const text = label.textContent.trim().toLowerCase();
+          checkedCategoryKeywords.push(...(CATEGORY_FILTER_KEYWORDS[text] || [text]));
+        }
+      });
+
+      const minPrice = minPriceInput ? parseFloat(minPriceInput.value) || 0 : 0;
+      const maxPrice = maxPriceInput ? parseFloat(maxPriceInput.value) || Infinity : Infinity;
+      const requireStock = inStockCheckbox ? inStockCheckbox.checked : false;
+      const requireSale = onSaleCheckbox ? onSaleCheckbox.checked : false;
+
+      let visibleCount = 0;
+      const cards = Array.from(grid.querySelectorAll('.product-card'));
+
+      cards.forEach(card => {
+        const category = card.dataset.category || '';
+        const name = card.dataset.name || '';
+        const price = parseFloat(card.dataset.price) || 0;
+        const stock = parseInt(card.dataset.stock, 10) || 0;
+        const sale = card.dataset.sale === '1';
+
+        const matchesUrlCategory = !urlCategory || category.includes(urlCategory) || name.includes(urlCategory);
+        const matchesCheckedCategories = !checkedCategoryKeywords.length ||
+          checkedCategoryKeywords.some(k => category.includes(k) || name.includes(k));
+        const matchesPrice = price >= minPrice && price <= maxPrice;
+        const matchesStock = !requireStock || stock > 0;
+        const matchesSale = !requireSale || sale;
+
+        const visible = matchesUrlCategory && matchesCheckedCategories && matchesPrice && matchesStock && matchesSale;
+        card.classList.toggle('hidden', !visible);
+        if (visible) visibleCount++;
+      });
+
+      const resultsEl = document.getElementById('shopResultsCount');
+      if (resultsEl) resultsEl.textContent = 'Showing ' + visibleCount + ' of ' + getProducts().length + ' products';
+
+      applySort();
+    }
+
+    function applySort() {
+      if (!sortSelect) return;
+      const mode = sortSelect.value;
+      const cards = Array.from(grid.querySelectorAll('.product-card'));
+
+      let sorted = cards;
+      if (mode === 'Price: Low to High') {
+        sorted = cards.slice().sort((a, b) => parseFloat(a.dataset.price) - parseFloat(b.dataset.price));
+      } else if (mode === 'Price: High to Low') {
+        sorted = cards.slice().sort((a, b) => parseFloat(b.dataset.price) - parseFloat(a.dataset.price));
+      } else if (mode === 'Newest') {
+        sorted = cards.slice().sort((a, b) => parseFloat(b.dataset.created) - parseFloat(a.dataset.created));
+      }
+      // "Featured" / "Best Rated" fall back to catalog order (no rating data collected).
+
+      sorted.forEach(card => grid.appendChild(card));
+    }
+
+    if (allCheckbox && !allCheckbox.dataset.cyWired) {
+      allCheckbox.addEventListener('change', function () {
+        if (this.checked) {
+          categoryCheckboxes.forEach(label => { const i = label.querySelector('input'); if (i) i.checked = false; });
+        }
+        applyFilters();
+      });
+      allCheckbox.dataset.cyWired = '1';
+    }
+
+    categoryCheckboxes.forEach(label => {
+      const input = label.querySelector('input');
+      if (!input || input.dataset.cyWired) return;
+      input.addEventListener('change', function () {
+        if (this.checked && allCheckbox) allCheckbox.checked = false;
+        const anyChecked = categoryCheckboxes.some(l => { const i = l.querySelector('input'); return i && i.checked; });
+        if (!anyChecked && allCheckbox) allCheckbox.checked = true;
+        applyFilters();
+      });
+      input.dataset.cyWired = '1';
+    });
+
+    [inStockCheckbox, onSaleCheckbox].forEach(cb => {
+      if (cb && !cb.dataset.cyWired) {
+        cb.addEventListener('change', applyFilters);
+        cb.dataset.cyWired = '1';
+      }
+    });
+
+    [minPriceInput, maxPriceInput].forEach(input => {
+      if (input && !input.dataset.cyWired) {
+        input.addEventListener('input', applyFilters);
+        input.dataset.cyWired = '1';
+      }
+    });
+
+    if (sortSelect && !sortSelect.dataset.cyWired) {
+      sortSelect.addEventListener('change', applyFilters);
+      sortSelect.dataset.cyWired = '1';
+    }
+
+    // Pre-check the matching category checkbox if arriving via a ?category= link
+    if (urlCategory) {
+      const match = categoryCheckboxes.find(label => {
+        const text = label.textContent.trim().toLowerCase();
+        const keywords = CATEGORY_FILTER_KEYWORDS[text] || [text];
+        return keywords.some(k => urlCategory.includes(k) || k.includes(urlCategory));
+      });
+      if (match) {
+        const input = match.querySelector('input');
+        if (input) input.checked = true;
+        if (allCheckbox) allCheckbox.checked = false;
+      }
+    }
+
+    applyFilters();
   }
 
   function renderCollectionCounts() {
