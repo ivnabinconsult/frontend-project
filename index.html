@@ -10,6 +10,311 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================
+       RESPONSIVE STYLES - Mobile First Approach
+       ============================================ */
+
+    /* Base responsive container */
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* Fluid typography using clamp() */
+    .hero-title {
+      font-size: clamp(2rem, 5vw + 1rem, 4rem);
+      line-height: 1.1;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(0.875rem, 1.5vw + 0.5rem, 1.125rem);
+    }
+
+    .section-title {
+      font-size: clamp(1.5rem, 3vw + 0.5rem, 2.25rem);
+    }
+
+    /* Responsive grids */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+    }
+
+    /* Feature banner responsive */
+    .feature-banner {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    @media (min-width: 768px) {
+      .feature-banner {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Newsletter responsive */
+    .newsletter {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: clamp(24px, 4vw, 64px);
+    }
+
+    @media (min-width: 768px) {
+      .newsletter {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .newsletter-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    @media (min-width: 480px) {
+      .newsletter-form {
+        flex-direction: row;
+      }
+    }
+
+    /* Hero buttons responsive */
+    .hero-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    @media (min-width: 480px) {
+      .hero-btns {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+
+    .hero-btns .btn {
+      width: 100%;
+      max-width: 280px;
+    }
+
+    @media (min-width: 480px) {
+      .hero-btns .btn {
+        width: auto;
+        max-width: none;
+      }
+    }
+
+    /* Product tabs responsive */
+    .product-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .product-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .product-tab {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    /* Footer bottom responsive */
+    .footer-bottom {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .footer-bottom {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+      }
+    }
+
+    /* Section header responsive */
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    @media (min-width: 768px) {
+      .section-header {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+    }
+
+    /* Mobile menu improvements */
+    .mobile-menu {
+      width: 100%;
+      max-width: 380px;
+    }
+
+    /* Cart drawer responsive */
+    .cart-drawer {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    /* Search overlay responsive */
+    .search-container {
+      width: 100%;
+      max-width: 640px;
+      padding: 0 16px;
+    }
+
+    .search-input {
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+    }
+
+    /* Hero scroll indicator */
+    .hero-scroll {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .hero-scroll {
+        display: flex;
+      }
+    }
+
+    /* Marquee responsive */
+    .marquee {
+      padding: 12px 0;
+    }
+
+    .marquee span {
+      font-size: clamp(0.625rem, 1vw, 0.8125rem);
+    }
+
+    /* Value cards responsive (if they exist) */
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    /* General spacing adjustments */
+    .section {
+      padding: clamp(40px, 6vw, 100px) 0;
+    }
+
+    /* Button sizing */
+    .btn {
+      padding: clamp(10px, 1.5vw, 14px) clamp(20px, 3vw, 36px);
+      font-size: clamp(0.8125rem, 1vw, 0.875rem);
+    }
+
+    .btn-lg {
+      padding: clamp(12px, 2vw, 18px) clamp(24px, 4vw, 40px);
+      font-size: clamp(0.875rem, 1.2vw, 1rem);
+    }
+
+    /* Ensure images don't overflow */
+    img, svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Touch-friendly tap targets */
+    .icon-btn, .product-action-btn, .product-wishlist {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    /* Prevent horizontal scroll */
+    body {
+      overflow-x: hidden;
+    }
+
+    /* Smooth scrolling for anchor links */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      .btn-outline {
+        border-width: 2px;
+      }
+    }
+
+    /* Dark mode support (if system prefers) */
+    @media (prefers-color-scheme: dark) {
+      /* Optional: Add dark mode overrides here if needed */
+    }
+
+    /* Print styles */
+    @media print {
+      .header, .mobile-menu, .cart-drawer, .search-overlay, 
+      .hero-scroll, .marquee, .newsletter, .social-grid,
+      .footer-social, .hero-btns {
+        display: none !important;
+      }
+
+      body {
+        background: white !important;
+        color: black !important;
+      }
+
+      a {
+        text-decoration: underline;
+        color: black !important;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -168,7 +473,7 @@
             <svg viewBox="0 0 100 100" fill="none" class="category-icon"><path d="M20 50L50 20l30 30v40H20V50z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M40 90V55h20v35" stroke="currentColor" stroke-width="2"/></svg>
           </div>
           <div class="category-card-label">
-            <h4>Living Room</h4>
+            <h4>Living Room Furnitures</h4>
             <span class="collection-count">Loading…</span>
           </div>
         </a>
@@ -177,7 +482,7 @@
             <svg viewBox="0 0 100 100" fill="none" class="category-icon"><rect x="15" y="40" width="70" height="40" rx="6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M20 40V25a30 30 0 0160 0v15" stroke="currentColor" stroke-width="2"/></svg>
           </div>
           <div class="category-card-label">
-            <h4>Bedroom</h4>
+            <h4>Bedroom Furnitures</h4>
             <span class="collection-count">Loading…</span>
           </div>
         </a>
@@ -247,95 +552,6 @@
             <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Fair Trade Certified</li>
           </ul>
           <a href="about.html#sustainability" class="btn btn-primary">Our Commitment</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STATS -->
-  <section class="section section-dark" id="stats">
-    <div class="container">
-      <div class="stats-grid">
-        <div class="stat-item">
-          <span class="stat-number" data-count="25000">0</span>
-          <span class="stat-suffix">+</span>
-          <p class="stat-label">Happy Customers</p>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number" data-count="250">0</span>
-          <p class="stat-label">Products</p>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number" data-count="8">0</span>
-          <p class="stat-label">Countries</p>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number" data-count="98">0</span>
-          <span class="stat-suffix">%</span>
-          <p class="stat-label">Satisfaction Rate</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TESTIMONIALS -->
-  <section class="section" id="testimonials">
-    <div class="container">
-      <div class="section-header center">
-        <h2 class="section-title">What Our Customers Say</h2>
-        <p class="section-subtitle">Real reviews from real people</p>
-      </div>
-      <div class="testimonials-grid">
-        <div class="testimonial-card">
-          <div class="testimonial-stars">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          </div>
-          <p class="testimonial-text">"The smart home hub transformed my living space. Setup was effortless and it controls everything seamlessly. Worth every penny."</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2);">SK</div>
-            <div>
-              <h5>Sarah Kim</h5>
-              <span>Verified Buyer</span>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="testimonial-stars">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          </div>
-          <p class="testimonial-text">"The velvet sofa arrived in perfect condition. The fabric feels luxurious and the build quality is exceptional. Already planning my next purchase."</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar" style="background: linear-gradient(135deg, #f093fb, #f5576c);">MR</div>
-            <div>
-              <h5>Marcus Reed</h5>
-              <span>Verified Buyer</span>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="testimonial-stars">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          </div>
-          <p class="testimonial-text">"I have been searching for a floor lamp that actually lights up a room properly. The Arc Lamp is stunning and functional. Gets compliments from everyone who visits."</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">EL</div>
-            <div>
-              <h5>Elena Lopez</h5>
-              <span>Verified Buyer</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>
