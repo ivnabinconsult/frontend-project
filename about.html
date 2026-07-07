@@ -25,13 +25,8 @@
     .value-icon { width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-bg-elevated); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: var(--color-text); }
     .value-card h4 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
     .value-card p { font-size: 14px; color: var(--color-text-secondary); line-height: 1.7; }
-    .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 60px 0 100px; }
-    .team-card { text-align: center; }
-    .team-avatar { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800; color: #fff; }
-    .team-card h5 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-    .team-card span { font-size: 13px; color: var(--color-text-tertiary); }
-    @media (max-width: 1024px) { .about-story { grid-template-columns: 1fr; gap: 40px; } .values-grid { grid-template-columns: repeat(2, 1fr); } .team-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 480px) { .values-grid { grid-template-columns: 1fr; } .team-grid { grid-template-columns: 1fr; } .about-story-img { height: 280px; } }
+    @media (max-width: 1024px) { .about-story { grid-template-columns: 1fr; gap: 40px; } .values-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .values-grid { grid-template-columns: 1fr; } .about-story-img { height: 280px; } }
   </style>
 </head>
 <body>
@@ -100,7 +95,7 @@
   <section class="about-hero">
     <div class="container">
       <h1>Our Story</h1>
-      <p>We believe great design should be accessible, sustainable, and built to last. Since 2020, Cyllux has been redefining how people live.</p>
+      <p>We believe great design should be accessible, sustainable, and built to last.</p>
     </div>
   </section>
 
@@ -111,7 +106,7 @@
       </div>
       <div class="about-story-content">
         <h2>Designed for Real Life</h2>
-        <p>Cyllux started with a simple idea: the things we surround ourselves with should make life better, not more complicated. Founded in 2020, we set out to create a destination for modern living — where interior design, smart technology, and quality furniture converge.</p>
+        <p>Cyllux started with a simple idea: the things we surround ourselves with should make life better, not more complicated. We set out to create a destination for modern living where interior design, smart technology, and quality furniture converge.</p>
         <p>Every product in our catalog is hand-selected for its craftsmanship, functionality, and aesthetic integrity. We partner with makers who share our values of sustainability and ethical production.</p>
         <p>From the first sketch to the final delivery, we obsess over the details so you don't have to. Because when your home works beautifully, so does everything else.</p>
       </div>
@@ -158,35 +153,6 @@
       </div>
     </div>
   </section>
-
-  <div class="container">
-    <div class="section-header center" style="margin-bottom:36px;padding-top:40px;">
-      <h2 class="section-title">Meet the Team</h2>
-      <p class="section-subtitle">The people behind the products</p>
-    </div>
-    <div class="team-grid">
-      <div class="team-card">
-        <div class="team-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2);">JD</div>
-        <h5>James Davies</h5>
-        <span>Founder & CEO</span>
-      </div>
-      <div class="team-card">
-        <div class="team-avatar" style="background: linear-gradient(135deg, #f093fb, #f5576c);">AL</div>
-        <h5>Aisha Lin</h5>
-        <span>Head of Design</span>
-      </div>
-      <div class="team-card">
-        <div class="team-avatar" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">MR</div>
-        <h5>Marcus Reed</h5>
-        <span>Chief Technology Officer</span>
-      </div>
-      <div class="team-card">
-        <div class="team-avatar" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">SK</div>
-        <h5>Sarah Kim</h5>
-        <span>Operations Director</span>
-      </div>
-    </div>
-  </div>
 
   <footer class="footer">
     <div class="container">
