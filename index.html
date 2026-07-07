@@ -29,6 +29,7 @@
         <a href="contact.html" class="nav-link">Contact</a>
       </nav>
       <div class="header-actions">
+        <select id="currencySelect" class="currency-select" aria-label="Currency"></select>
         <button class="icon-btn" aria-label="Search" id="searchBtn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         </button>
@@ -162,40 +163,40 @@
         <a href="shop.html" class="link-arrow">View All <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
       </div>
       <div class="category-grid">
-        <a href="shop.html?category=living" class="category-card">
+        <a href="shop.html?category=living" class="category-card" data-collection-keywords="living,home,decor,interior">
           <div class="category-card-bg" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
             <svg viewBox="0 0 100 100" fill="none" class="category-icon"><path d="M20 50L50 20l30 30v40H20V50z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M40 90V55h20v35" stroke="currentColor" stroke-width="2"/></svg>
           </div>
           <div class="category-card-label">
             <h4>Living Room</h4>
-            <span>86 Products</span>
+            <span class="collection-count">Loading…</span>
           </div>
         </a>
-        <a href="shop.html?category=bedroom" class="category-card">
+        <a href="shop.html?category=bedroom" class="category-card" data-collection-keywords="bedroom,bed">
           <div class="category-card-bg" style="background: linear-gradient(135deg, #2e1a1a 0%, #3e1616 100%);">
             <svg viewBox="0 0 100 100" fill="none" class="category-icon"><rect x="15" y="40" width="70" height="40" rx="6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M20 40V25a30 30 0 0160 0v15" stroke="currentColor" stroke-width="2"/></svg>
           </div>
           <div class="category-card-label">
             <h4>Bedroom</h4>
-            <span>64 Products</span>
+            <span class="collection-count">Loading…</span>
           </div>
         </a>
-        <a href="shop.html?category=tech" class="category-card">
+        <a href="shop.html?category=tech" class="category-card" data-collection-keywords="tech,gadget,electronic">
           <div class="category-card-bg" style="background: linear-gradient(135deg, #1a2e1a 0%, #163e16 100%);">
             <svg viewBox="0 0 100 100" fill="none" class="category-icon"><rect x="30" y="15" width="40" height="60" rx="6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="50" cy="82" r="4" stroke="currentColor" stroke-width="2"/><rect x="38" y="28" width="24" height="34" rx="3" stroke="currentColor" stroke-width="2"/></svg>
           </div>
           <div class="category-card-label">
             <h4>Tech & Gadgets</h4>
-            <span>52 Products</span>
+            <span class="collection-count">Loading…</span>
           </div>
         </a>
-        <a href="shop.html?category=lighting" class="category-card">
+        <a href="shop.html?category=lighting" class="category-card" data-collection-keywords="lighting,lamp,light,decor">
           <div class="category-card-bg" style="background: linear-gradient(135deg, #2e2e1a 0%, #3e3e16 100%);">
             <svg viewBox="0 0 100 100" fill="none" class="category-icon"><rect x="45" y="15" width="10" height="30" rx="3" stroke="currentColor" stroke-width="2"/><path d="M30 45h40l-8 45H38z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
           </div>
           <div class="category-card-label">
             <h4>Lighting & Decor</h4>
-            <span>48 Products</span>
+            <span class="collection-count">Loading…</span>
           </div>
         </a>
       </div>

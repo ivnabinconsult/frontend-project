@@ -667,7 +667,7 @@
   }
 
   function renderCollectionCounts() {
-    const cards = document.querySelectorAll('.collection-card[data-collection-keywords]');
+    const cards = document.querySelectorAll('.collection-card[data-collection-keywords], .category-card[data-collection-keywords]');
     if (!cards.length) return;
 
     const products = getProducts();
