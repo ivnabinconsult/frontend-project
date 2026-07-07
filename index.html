@@ -1,104 +1,478 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>CYLLUX H🏠MES — Smart Living & Modern Design</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyllux — Elevate Your Everyday</title>
+  <meta name="description" content="Cyllux — Interior designs, smart tech, and household furniture for modern living. Curated with sustainability and craftsmanship in mind.">
+  
+  <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <script src="themes.js"></script>
-  <script src="mobile-nav.js"></script>
-  <script src="auth.js"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <nav id="main-nav">
-    <div class="nav-logo" onclick="window.location.href='index.html'">
-      <img class="logo-mark" src="logo.jpg" alt="CX logo">
-      CYLLUX
+
+  <!-- HEADER -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <svg width="120" height="36" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="28" font-family="Inter, -apple-system, sans-serif" font-size="28" font-weight="900" fill="white" letter-spacing="-1">CYLLUX</text>
+</svg>
+      </a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="shop.html" class="nav-link">Shop</a>
+        <a href="collections.html" class="nav-link">Collections</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <select id="currencySelect" class="currency-select" aria-label="Currency"></select>
+        <button class="icon-btn" aria-label="Search" id="searchBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+        <a href="account.html" class="icon-btn" aria-label="Account">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+        <button class="icon-btn cart-btn" aria-label="Cart" id="cartBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
-    <ul class="nav-links">
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="products.html">Catalog</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact us</a></li>
-      <li><a href="seller-dashboard.html">Seller Hub</a></li>
-    </ul>
-    <div class="nav-actions">
-      <span class="theme-label" id="theme-label">Dark</span>
-      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()"></div>
-      <button class="nav-icon-btn" id="nav-account-btn" onclick="goAccount()">👤</button>
-      <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
-        🛒
-        <span class="cart-badge" id="cart-badge">0</span>
+  </header>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <a href="index.html" class="logo">
+        <svg width="120" height="36" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="28" font-family="Inter, -apple-system, sans-serif" font-size="28" font-weight="900" fill="#111111" letter-spacing="-1">CYLLUX</text>
+</svg>
+      </a>
+      <button class="mobile-close" id="mobileClose" aria-label="Close menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
       </button>
     </div>
-      <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
-        <span></span><span></span><span></span>
+    <nav class="mobile-nav">
+      <a href="index.html" class="mobile-nav-link active">Home</a>
+      <a href="shop.html" class="mobile-nav-link">Shop</a>
+      <a href="collections.html" class="mobile-nav-link">Collections</a>
+      <a href="about.html" class="mobile-nav-link">About</a>
+      <a href="contact.html" class="mobile-nav-link">Contact</a>
+    </nav>
+    <div class="mobile-menu-footer">
+      <a href="account.html" class="mobile-menu-footer-link">My Account</a>
+      <a href="admin.html" class="mobile-menu-footer-link">Admin Panel</a>
+      <a href="cart.html" class="mobile-menu-footer-link" id="mobileCartLink">Cart (0)</a>
+    </div>
+  </div>
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <!-- SEARCH OVERLAY -->
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-container">
+      <button class="search-close" id="searchClose" aria-label="Close search">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
       </button>
-  </nav>
-
-  <main>
-    <section class="hero">
-      <div class="hero-bg"><canvas id="heroCanvas"></canvas></div>
-      <div class="hero-gradient"></div>
-      <div class="hero-content">
-        <div class="hero-eyebrow"><div class="hero-eyebrow-dot"></div>New Collection 2026 — Smart Living</div>
-        <h1 class="hero-title">Your Space,<br><span class="line-2">Reimagined.</span></h1>
-        <p class="hero-body">Cyllux Homes bridges architecture and intelligence — curating interior design and cutting-edge tech for spaces that think.</p>
-        <div class="hero-actions">
-          <button class="btn-primary" onclick="window.location.href='products.html'">Explore Catalog →</button>
-          <button class="btn-outline" onclick="window.location.href='about.html'">Our Philosophy</button>
-        </div>
-      </div>
-    
-    </section>
-
-    <div class="marquee-strip">
-      <div class="marquee-inner">
-        <span>Smart Living</span><span>✦</span><span>Interior Design</span><span>✦</span><span>Tech & Gadgets</span><span>✦</span>
-        <span>Ambient Lighting</span><span>✦</span><span>Minimalist Spaces</span><span>✦</span><span>Connected Homes</span><span>✦</span>
+      <input type="text" class="search-input" placeholder="Search products, categories..." id="searchInput">
+      <div class="search-suggestions" id="searchSuggestions">
+        <!-- populated dynamically by store.js from your product catalog -->
       </div>
     </div>
+  </div>
 
-    <section style="padding: 60px 5vw">
-      <div class="section-label">Curated Selection</div>
-      <h2 class="section-title">Featured This Season</h2>
-      <div class="products-grid" id="featured-grid"></div>
-      <div style="text-align:center; margin-top:40px">
-        <button class="btn-outline" onclick="window.location.href='products.html'">View Full Catalog</button>
+  <!-- CART DRAWER -->
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer-header">
+      <h3>Your Cart</h3>
+      <button class="cart-drawer-close" id="cartDrawerClose" aria-label="Close cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <div class="cart-drawer-items" id="cartDrawerItems">
+    </div>
+    <div class="cart-drawer-footer">
+      <div class="cart-subtotal">
+        <span>Subtotal</span>
+        <span class="cart-subtotal-amount" id="cartSubtotal">$0</span>
       </div>
-    </section>
+      <p class="cart-note">Shipping and taxes calculated at checkout.</p>
+      <a href="checkout.html" class="btn btn-primary btn-full">Checkout</a>
+      <a href="cart.html" class="btn btn-outline btn-full">View Cart</a>
+    </div>
+  </div>
+  <div class="cart-overlay" id="cartOverlay"></div>
 
-    <div class="philosophy-strip">
-      <div>
-        <div class="section-label">Our Approach</div>
-        <h2 class="section-title">Design That Thinks<br>Ahead of You</h2>
-        <div class="philosophy-pillars">
-          <div class="pillar"><div class="pillar-num">I.</div><div class="pillar-content"><h4>Form &amp; Function</h4><p>Every item we curate earns its place — aesthetically and functionally inseparable.</p></div></div>
-          <div class="pillar"><div class="pillar-num">II.</div><div class="pillar-content"><h4>Human-First Tech</h4><p>Technology should disappear into your space, not dominate it.</p></div></div>
-          <div class="pillar"><div class="pillar-num">III.</div><div class="pillar-content"><h4>Lifetime Value</h4><p>We design for longevity — spaces and products built to outlast trends.</p></div></div>
-        </div>
-      </div>
-      <div class="philosophy-visual">
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-bg-gradient"></div>
+      <div class="hero-bg-pattern"></div>
+    </div>
+    <div class="hero-content">
+      <span class="hero-tag">New Season 2026</span>
+      <h1 class="hero-title">Elevate Your<br>Everyday</h1>
+      <p class="hero-subtitle">Discover curated interior designs, smart tech, and premium furniture. Built for modern living with uncompromising craftsmanship.</p>
+      <div class="hero-btns">
+        <a href="shop.html" class="btn btn-primary btn-lg">Shop New Arrivals</a>
+        <a href="collections.html" class="btn btn-outline btn-lg">Explore Collections</a>
       </div>
     </div>
-  </main>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="hero-scroll-line"></div>
+    </div>
+  </section>
 
-  <footer>
-    <div class="footer-bottom">
-      <div class="footer-copy">© 2026 <span style="color:var(--crimson)">Cyllux Homes</span>. All rights reserved.</div>
+  <!-- MARQUEE -->
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>Free Shipping over $75</span>
+      <span class="marquee-dot">&#8226;</span>
+      <span>30-Day Returns</span>
+      <span class="marquee-dot">&#8226;</span>
+      <span>Premium Quality Guaranteed</span>
+      <span class="marquee-dot">&#8226;</span>
+      <span>Sustainable Materials</span>
+      <span class="marquee-dot">&#8226;</span>
+      <span>Free Shipping over $75</span>
+      <span class="marquee-dot">&#8226;</span>
+      <span>30-Day Returns</span>
+      <span class="marquee-dot">&#8226;</span>
+      <span>Premium Quality Guaranteed</span>
+      <span class="marquee-dot">&#8226;</span>
+      <span>Sustainable Materials</span>
+      <span class="marquee-dot">&#8226;</span>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <section class="section" id="categories">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Shop by Category</h2>
+          <p class="section-subtitle">Browse our curated collections</p>
+        </div>
+        <a href="shop.html" class="link-arrow">View All <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+      <div class="category-grid">
+        <a href="shop.html?category=living" class="category-card">
+          <div class="category-card-bg" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+            <svg viewBox="0 0 100 100" fill="none" class="category-icon"><path d="M20 50L50 20l30 30v40H20V50z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M40 90V55h20v35" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <div class="category-card-label">
+            <h4>Living Room</h4>
+            <span>86 Products</span>
+          </div>
+        </a>
+        <a href="shop.html?category=bedroom" class="category-card">
+          <div class="category-card-bg" style="background: linear-gradient(135deg, #2e1a1a 0%, #3e1616 100%);">
+            <svg viewBox="0 0 100 100" fill="none" class="category-icon"><rect x="15" y="40" width="70" height="40" rx="6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M20 40V25a30 30 0 0160 0v15" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <div class="category-card-label">
+            <h4>Bedroom</h4>
+            <span>64 Products</span>
+          </div>
+        </a>
+        <a href="shop.html?category=tech" class="category-card">
+          <div class="category-card-bg" style="background: linear-gradient(135deg, #1a2e1a 0%, #163e16 100%);">
+            <svg viewBox="0 0 100 100" fill="none" class="category-icon"><rect x="30" y="15" width="40" height="60" rx="6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="50" cy="82" r="4" stroke="currentColor" stroke-width="2"/><rect x="38" y="28" width="24" height="34" rx="3" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <div class="category-card-label">
+            <h4>Tech & Gadgets</h4>
+            <span>52 Products</span>
+          </div>
+        </a>
+        <a href="shop.html?category=lighting" class="category-card">
+          <div class="category-card-bg" style="background: linear-gradient(135deg, #2e2e1a 0%, #3e3e16 100%);">
+            <svg viewBox="0 0 100 100" fill="none" class="category-icon"><rect x="45" y="15" width="10" height="30" rx="3" stroke="currentColor" stroke-width="2"/><path d="M30 45h40l-8 45H38z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="category-card-label">
+            <h4>Lighting & Decor</h4>
+            <span>48 Products</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED PRODUCTS -->
+  <section class="section section-light" id="products">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Trending Now</h2>
+          <p class="section-subtitle">Most loved by our community</p>
+        </div>
+        <a href="shop.html" class="link-arrow">View All <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+      <div class="product-tabs">
+        <button class="product-tab active" data-tab="all">All</button>
+        <button class="product-tab" data-tab="clothing">Clothing</button>
+        <button class="product-tab" data-tab="accessories">Accessories</button>
+        <button class="product-tab" data-tab="footwear">Footwear</button>
+      </div>
+      <div class="product-grid" id="productGrid" data-mode="home" data-limit="8">
+        <!-- Products are rendered dynamically by store.js from your product catalog -->
+      </div>
+      <div class="product-empty-state" id="productEmptyState" style="display:none;">
+        <p>No products yet. <a href="admin.html" class="link-arrow">Add your first product in the Admin Panel</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURE BANNER -->
+  <section class="section" id="sustainability">
+    <div class="container">
+      <div class="feature-banner">
+        <div class="feature-banner-media">
+          <div class="feature-banner-img">
+            <svg viewBox="0 0 400 400" fill="none" class="feature-banner-icon"><circle cx="200" cy="200" r="150" stroke="currentColor" stroke-width="2" opacity="0.3"/><circle cx="200" cy="200" r="100" stroke="currentColor" stroke-width="2" opacity="0.3"/><circle cx="200" cy="200" r="50" stroke="currentColor" stroke-width="2" opacity="0.3"/><path d="M200 80v240M80 200h240" stroke="currentColor" stroke-width="2" opacity="0.3" stroke-linecap="round"/><path d="M120 120l160 160M120 280l160-160" stroke="currentColor" stroke-width="1" opacity="0.15" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="feature-banner-content">
+          <span class="feature-banner-tag">Sustainability</span>
+          <h3 class="feature-banner-title">Crafted for Tomorrow</h3>
+          <p class="feature-banner-text">Every Cyllux product is designed with sustainability at its core. From smart home devices to handcrafted furniture, we use responsibly sourced materials and ethical manufacturing to reduce our footprint without compromising on style.</p>
+          <ul class="feature-banner-list">
+            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 100% Organic Cotton</li>
+            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Recycled Packaging</li>
+            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Fair Trade Certified</li>
+          </ul>
+          <a href="about.html#sustainability" class="btn btn-primary">Our Commitment</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="section section-dark" id="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-number" data-count="25000">0</span>
+          <span class="stat-suffix">+</span>
+          <p class="stat-label">Happy Customers</p>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" data-count="250">0</span>
+          <p class="stat-label">Products</p>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" data-count="8">0</span>
+          <p class="stat-label">Countries</p>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" data-count="98">0</span>
+          <span class="stat-suffix">%</span>
+          <p class="stat-label">Satisfaction Rate</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section" id="testimonials">
+    <div class="container">
+      <div class="section-header center">
+        <h2 class="section-title">What Our Customers Say</h2>
+        <p class="section-subtitle">Real reviews from real people</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <p class="testimonial-text">"The smart home hub transformed my living space. Setup was effortless and it controls everything seamlessly. Worth every penny."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2);">SK</div>
+            <div>
+              <h5>Sarah Kim</h5>
+              <span>Verified Buyer</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <p class="testimonial-text">"The velvet sofa arrived in perfect condition. The fabric feels luxurious and the build quality is exceptional. Already planning my next purchase."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background: linear-gradient(135deg, #f093fb, #f5576c);">MR</div>
+            <div>
+              <h5>Marcus Reed</h5>
+              <span>Verified Buyer</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <p class="testimonial-text">"I have been searching for a floor lamp that actually lights up a room properly. The Arc Lamp is stunning and functional. Gets compliments from everyone who visits."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">EL</div>
+            <div>
+              <h5>Elena Lopez</h5>
+              <span>Verified Buyer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="section section-light" id="newsletter">
+    <div class="container">
+      <div class="newsletter">
+        <div class="newsletter-content">
+          <h3>Join the Cyllux Community</h3>
+          <p>Get early access to new collections, exclusive offers, and style inspiration delivered to your inbox.</p>
+        </div>
+        <form class="newsletter-form" id="newsletterForm">
+          <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+          <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL GRID -->
+  <section class="section" id="social">
+    <div class="container">
+      <div class="section-header center">
+        <h2 class="section-title">@cyllux</h2>
+        <p class="section-subtitle">Follow us for daily inspiration</p>
+      </div>
+      <div class="social-grid">
+        <a href="#" class="social-item">
+          <div class="social-img">
+            <svg viewBox="0 0 200 200" fill="none"><rect width="200" height="200" fill="currentColor" opacity="0.05"/><circle cx="100" cy="80" r="30" stroke="currentColor" stroke-width="2" opacity="0.2"/><path d="M50 160c20-30 50-40 80-30s50 10 70-10" stroke="currentColor" stroke-width="2" opacity="0.2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="social-overlay">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          </div>
+        </a>
+        <a href="#" class="social-item">
+          <div class="social-img">
+            <svg viewBox="0 0 200 200" fill="none"><rect width="200" height="200" fill="currentColor" opacity="0.05"/><rect x="40" y="60" width="120" height="80" rx="8" stroke="currentColor" stroke-width="2" opacity="0.2"/><circle cx="100" cy="100" r="25" stroke="currentColor" stroke-width="2" opacity="0.2"/></svg>
+          </div>
+          <div class="social-overlay">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          </div>
+        </a>
+        <a href="#" class="social-item">
+          <div class="social-img">
+            <svg viewBox="0 0 200 200" fill="none"><rect width="200" height="200" fill="currentColor" opacity="0.05"/><path d="M60 140V60l80 40-80 40z" stroke="currentColor" stroke-width="2" opacity="0.2" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="social-overlay">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          </div>
+        </a>
+        <a href="#" class="social-item">
+          <div class="social-img">
+            <svg viewBox="0 0 200 200" fill="none"><rect width="200" height="200" fill="currentColor" opacity="0.05"/><path d="M50 100h100M100 50v100" stroke="currentColor" stroke-width="2" opacity="0.2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="social-overlay">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          </div>
+        </a>
+        <a href="#" class="social-item">
+          <div class="social-img">
+            <svg viewBox="0 0 200 200" fill="none"><rect width="200" height="200" fill="currentColor" opacity="0.05"/><circle cx="100" cy="100" r="40" stroke="currentColor" stroke-width="2" opacity="0.2"/><path d="M100 70v60M70 100h60" stroke="currentColor" stroke-width="2" opacity="0.2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="social-overlay">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-logo">
+            <svg width="100" height="32" viewBox="0 0 100 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="24" font-family="Inter, -apple-system, sans-serif" font-size="22" font-weight="900" fill="#111111" letter-spacing="-1">CYLLUX</text>
+</svg>
+            <span>CYLLUX</span>
+          </a>
+          <p class="footer-desc">Elevating everyday essentials through thoughtful design, premium materials, and sustainable practices. Made for those who appreciate the details.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="#" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+            <a href="#" aria-label="Twitter">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+            </a>
+            <a href="#" aria-label="YouTube">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h6>Shop</h6>
+          <a href="shop.html">New Arrivals</a>
+          <a href="shop.html">Best Sellers</a>
+          <a href="shop.html?category=living">Men</a>
+          <a href="shop.html?category=bedroom">Women</a>
+          <a href="shop.html?category=tech">Accessories</a>
+        </div>
+        <div class="footer-col">
+          <h6>Company</h6>
+          <a href="about.html">About Us</a>
+          <a href="about.html#sustainability">Sustainability</a>
+          <a href="about.html#careers">Careers</a>
+          <a href="about.html#press">Press</a>
+        </div>
+        <div class="footer-col">
+          <h6>Support</h6>
+          <a href="contact.html">Help Center</a>
+          <a href="contact.html">Shipping & Returns</a>
+          <a href="contact.html">Size Guide</a>
+          <a href="contact.html">Contact Us</a>
+        </div>
+        <div class="footer-col">
+          <h6>Legal</h6>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Cyllux. All rights reserved.</span>
+        <span>Designed with precision.</span>
+      </div>
     </div>
   </footer>
 
-  <div class="toast" id="toast"><div id="toast-msg"></div></div>
-  <div id="pf-launcher" onclick="pfToggle()"><svg viewBox="0 0 24 24" width="26" height="26" fill="white"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg></div>
-  <div id="pf-window"><div class="pf-header"><span>🏠 Cyllux Assistant</span></div><div class="pf-messages" id="pf-messages"></div><div class="pf-input-row"><textarea id="pf-input" placeholder="Ask about design..." rows="1"></textarea><button id="pf-send" onclick="pfSend()">➤</button></div></div>
-
-  <script src="data.js"></script>
-  <script src="cart.js"></script>
-  <script src="chatbot.js"></script>
-  
+  <script src="store.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

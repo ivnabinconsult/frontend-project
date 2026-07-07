@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account — Cyllux</title>
+  <meta name="description" content="Manage your Cyllux account, orders, and preferences.">
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    .account-page { padding: 120px 0 100px; }
+    .account-page h1 { font-size: 28px; font-weight: 800; margin-bottom: 32px; }
+    .account-layout { display: grid; grid-template-columns: 260px 1fr; gap: 48px; align-items: start; }
+    .account-sidebar { position: sticky; top: 100px; }
+    .account-nav { display: flex; flex-direction: column; gap: 4px; }
+    .account-nav a { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; color: var(--color-text-secondary); transition: all 0.15s; }
+    .account-nav a:hover, .account-nav a.active { background: var(--color-bg-elevated); color: var(--color-text); }
+    .account-nav a svg { width: 18px; height: 18px; }
+    .account-section { background: var(--color-bg-elevated); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: 32px; margin-bottom: 20px; }
+    .account-section h3 { font-size: 18px; font-weight: 700; margin-bottom: 24px; }
+    .account-card { display: flex; align-items: center; gap: 20px; padding: 24px; background: var(--color-bg); border-radius: var(--radius-lg); border: 1px solid var(--color-border-light); margin-bottom: 16px; }
+    .account-avatar { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; color: #fff; background: linear-gradient(135deg, #667eea, #764ba2); flex-shrink: 0; }
+    .account-card-info h4 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .account-card-info p { font-size: 14px; color: var(--color-text-secondary); }
+    .orders-list { display: flex; flex-direction: column; gap: 12px; }
+    .order-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr auto; gap: 16px; align-items: center; padding: 16px 20px; background: var(--color-bg); border-radius: var(--radius-md); border: 1px solid var(--color-border-light); font-size: 14px; }
+    .order-row h5 { font-size: 14px; font-weight: 600; }
+    .order-row p { font-size: 13px; color: var(--color-text-tertiary); }
+    .order-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; }
+    .status-processing { background: #fef3c7; color: #92400e; }
+    .status-shipped { background: #dbeafe; color: #1e40af; }
+    .status-delivered { background: #d1fae5; color: #065f46; }
+    .wishlist-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .wishlist-item { position: relative; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-border-light); background: var(--color-bg); }
+    .wishlist-item-img { height: 180px; background: var(--color-bg-elevated); display: flex; align-items: center; justify-content: center; }
+    .wishlist-item-img svg { width: 60px; height: 60px; color: var(--color-text-muted); opacity: 0.5; }
+    .wishlist-item-info { padding: 16px; }
+    .wishlist-item-info h5 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .wishlist-item-info p { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+    .wishlist-item-actions { display: flex; gap: 8px; }
+    .wishlist-item-actions .btn { flex: 1; padding: 10px; font-size: 13px; }
+    .wishlist-remove { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; border-radius: 50%; background: var(--color-silver-glass, rgba(210,214,217,0.95)); display: flex; align-items: center; justify-content: center; color: var(--color-text-tertiary); cursor: pointer; border: none; }
+    .wishlist-remove:hover { color: var(--color-sale); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    @media (max-width: 1024px) { .account-layout { grid-template-columns: 1fr; } .account-sidebar { position: static; margin-bottom: 24px; } .account-nav { flex-direction: row; overflow-x: auto; } .wishlist-grid { grid-template-columns: repeat(2, 1fr); } .order-row { grid-template-columns: 1fr; gap: 8px; } }
+    @media (max-width: 480px) { .wishlist-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <header class="header scrolled" id="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo"><svg width="120" height="36" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="28" font-family="Inter, sans-serif" font-size="28" font-weight="900" fill="#111" letter-spacing="-1">CYLLUX</text>
+</svg></a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="shop.html" class="nav-link">Shop</a>
+        <a href="collections.html" class="nav-link">Collections</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <select id="currencySelect" class="currency-select" aria-label="Currency"></select>
+        <button class="icon-btn" aria-label="Search" id="searchBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+        <a href="account.html" class="icon-btn" aria-label="Account" style="background:rgba(0,0,0,0.05);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+        <button class="icon-btn cart-btn" aria-label="Cart" id="cartBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge" id="cartBadge">0</span></button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <a href="index.html" class="logo"><svg width="120" height="36" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="28" font-family="Inter, sans-serif" font-size="28" font-weight="900" fill="#111" letter-spacing="-1">CYLLUX</text>
+</svg></a>
+      <button class="mobile-close" id="mobileClose" aria-label="Close menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+    <nav class="mobile-nav">
+      <a href="index.html" class="mobile-nav-link">Home</a>
+      <a href="shop.html" class="mobile-nav-link">Shop</a>
+      <a href="collections.html" class="mobile-nav-link">Collections</a>
+      <a href="about.html" class="mobile-nav-link">About</a>
+      <a href="contact.html" class="mobile-nav-link">Contact</a>
+    </nav>
+    <div class="mobile-menu-footer">
+      <a href="account.html" class="mobile-menu-footer-link">My Account</a>
+      <a href="admin.html" class="mobile-menu-footer-link">Admin Panel</a>
+      <a href="cart.html" class="mobile-menu-footer-link" id="mobileCartLink">Cart (0)</a>
+    </div>
+  </div>
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <section class="account-page">
+    <div class="container">
+      <h1>My Account</h1>
+      <div class="account-layout">
+        <aside class="account-sidebar">
+          <div class="account-card">
+            <div class="account-avatar">JD</div>
+            <div class="account-card-info">
+              <h4>John Doe</h4>
+              <p>john.doe@example.com</p>
+            </div>
+          </div>
+          <nav class="account-nav">
+            <a href="#" class="active" data-tab="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Overview</a>
+            <a href="#" data-tab="orders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Orders</a>
+            <a href="#" data-tab="wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg> Wishlist</a>
+            <a href="#" data-tab="addresses"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Addresses</a>
+            <a href="#" data-tab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</a>
+          </nav>
+        </aside>
+
+        <div class="account-main">
+          <!-- Overview -->
+          <div class="tab-content active" id="tab-overview">
+            <div class="account-section">
+              <h3>Account Overview</h3>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+                <div style="padding:24px;background:var(--color-bg);border-radius:var(--radius-md);border:1px solid var(--color-border-light);text-align:center;">
+                  <div style="font-size:32px;font-weight:800;margin-bottom:4px;" id="statTotalOrders">0</div>
+                  <div style="font-size:13px;color:var(--color-text-secondary);">Total Orders</div>
+                </div>
+                <div style="padding:24px;background:var(--color-bg);border-radius:var(--radius-md);border:1px solid var(--color-border-light);text-align:center;">
+                  <div style="font-size:32px;font-weight:800;margin-bottom:4px;" id="statWishlistItems">0</div>
+                  <div style="font-size:13px;color:var(--color-text-secondary);">Wishlist Items</div>
+                </div>
+                <div style="padding:24px;background:var(--color-bg);border-radius:var(--radius-md);border:1px solid var(--color-border-light);text-align:center;">
+                  <div style="font-size:32px;font-weight:800;margin-bottom:4px;" id="statSavedAddresses">0</div>
+                  <div style="font-size:13px;color:var(--color-text-secondary);">Saved Addresses</div>
+                </div>
+              </div>
+            </div>
+            <div class="account-section">
+              <h3>Recent Orders</h3>
+              <div class="orders-list" id="recentOrdersList">
+                <!-- Rendered dynamically by store.js -->
+              </div>
+              <p id="recentOrdersEmpty" style="display:none;color:var(--color-text-tertiary);font-size:14px;">You haven't placed any orders yet. <a href="shop.html" class="link-arrow">Start shopping</a></p>
+            </div>
+          </div>
+
+          <!-- Orders -->
+          <div class="tab-content" id="tab-orders">
+            <div class="account-section">
+              <h3>All Orders</h3>
+              <div class="orders-list" id="allOrdersList">
+                <!-- Rendered dynamically by store.js -->
+              </div>
+              <p id="allOrdersEmpty" style="display:none;color:var(--color-text-tertiary);font-size:14px;">You haven't placed any orders yet. <a href="shop.html" class="link-arrow">Start shopping</a></p>
+            </div>
+          </div>
+
+          <!-- Wishlist -->
+          <div class="tab-content" id="tab-wishlist">
+            <div class="account-section">
+              <h3>My Wishlist</h3>
+              <div class="wishlist-grid" id="wishlistGrid">
+                <!-- Rendered dynamically by store.js -->
+              </div>
+              <p id="wishlistEmpty" style="display:none;color:var(--color-text-tertiary);font-size:14px;">Your wishlist is empty. <a href="shop.html" class="link-arrow">Browse products</a></p>
+            </div>
+          </div>
+
+          <!-- Addresses -->
+          <div class="tab-content" id="tab-addresses">
+            <div class="account-section">
+              <h3>Saved Addresses</h3>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="padding:20px;background:var(--color-bg);border-radius:var(--radius-md);border:2px solid var(--color-text);position:relative;">
+                  <span style="position:absolute;top:12px;right:12px;font-size:11px;font-weight:700;padding:4px 10px;background:var(--color-text);color:#fff;border-radius:100px;">Default</span>
+                  <h5 style="font-size:15px;font-weight:700;margin-bottom:8px;">John Doe</h5>
+                  <p style="font-size:14px;color:var(--color-text-secondary);line-height:1.6;">123 Main Street, Apt 4B<br>New York, NY 10001<br>United States<br>+1 (555) 123-4567</p>
+                  <div style="display:flex;gap:12px;margin-top:12px;">
+                    <button class="btn btn-outline" style="padding:8px 16px;font-size:13px;">Edit</button>
+                    <button class="btn btn-outline" style="padding:8px 16px;font-size:13px;">Delete</button>
+                  </div>
+                </div>
+                <div style="padding:20px;background:var(--color-bg);border-radius:var(--radius-md);border:1px solid var(--color-border-light);">
+                  <h5 style="font-size:15px;font-weight:700;margin-bottom:8px;">John Doe</h5>
+                  <p style="font-size:14px;color:var(--color-text-secondary);line-height:1.6;">456 Oak Avenue<br>Brooklyn, NY 11201<br>United States<br>+1 (555) 987-6543</p>
+                  <div style="display:flex;gap:12px;margin-top:12px;">
+                    <button class="btn btn-outline" style="padding:8px 16px;font-size:13px;">Edit</button>
+                    <button class="btn btn-outline" style="padding:8px 16px;font-size:13px;">Delete</button>
+                  </div>
+                </div>
+                <button class="btn btn-outline" style="padding:14px;font-size:14px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg> Add New Address</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings -->
+          <div class="tab-content" id="tab-settings">
+            <div class="account-section">
+              <h3>Profile Settings</h3>
+              <div class="form-row">
+                <div class="form-group"><label>First Name</label><input type="text" value="John"></div>
+                <div class="form-group"><label>Last Name</label><input type="text" value="Doe"></div>
+              </div>
+              <div class="form-group"><label>Email</label><input type="email" value="john.doe@example.com"></div>
+              <div class="form-group"><label>Phone</label><input type="tel" value="+1 (555) 123-4567"></div>
+              <button class="btn btn-primary">Save Changes</button>
+            </div>
+            <div class="account-section">
+              <h3>Password</h3>
+              <div class="form-group"><label>Current Password</label><input type="password" placeholder="Enter current password"></div>
+              <div class="form-group"><label>New Password</label><input type="password" placeholder="Enter new password"></div>
+              <div class="form-group"><label>Confirm New Password</label><input type="password" placeholder="Confirm new password"></div>
+              <button class="btn btn-primary">Update Password</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-logo"><span>CYLLUX</span></a>
+          <p class="footer-desc">Elevating everyday essentials through thoughtful design, premium materials, and sustainable practices.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+            <a href="#" aria-label="Twitter"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-col"><h6>Shop</h6><a href="shop.html">New Arrivals</a><a href="shop.html">Best Sellers</a><a href="shop.html">Tech & Gadgets</a><a href="shop.html">Furniture</a><a href="shop.html">Lighting</a></div>
+        <div class="footer-col"><h6>Company</h6><a href="about.html">About Us</a><a href="about.html">Sustainability</a><a href="about.html">Careers</a><a href="about.html">Press</a><a href="admin.html">Admin Panel</a></div>
+        <div class="footer-col"><h6>Support</h6><a href="contact.html">Help Center</a><a href="contact.html">Shipping & Returns</a><a href="contact.html">Contact Us</a></div>
+        <div class="footer-col"><h6>Legal</h6><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cookie Policy</a></div>
+      </div>
+      <div class="footer-bottom"><span>&copy; 2026 Cyllux. All rights reserved.</span><span>Designed with precision.</span></div>
+    </div>
+  </footer>
+
+  <script src="store.js"></script>
+  <script src="main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      CylluxStore.renderAccountOverview();
+    });
+
+    document.querySelectorAll('.account-nav a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.account-nav a').forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+        const tab = this.dataset.tab;
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById('tab-' + tab).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

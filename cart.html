@@ -1,69 +1,181 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>CYLLUX HOMES — Shopping Cart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart — Cyllux</title>
+  <meta name="description" content="Review your items and proceed to checkout at Cyllux.">
+  
+  <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <script src="themes.js"></script>
-  <script src="mobile-nav.js"></script>
-  <script src="auth.js"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    .cart-page { padding: 120px 0 100px; }
+    .cart-page h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+    .cart-page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; flex-wrap: wrap; gap: 12px; }
+    .cart-page-header span { color: var(--color-text-secondary); font-size: 14px; }
+    .cart-layout { display: grid; grid-template-columns: 1fr 380px; gap: 48px; align-items: start; }
+    .cart-items-list { display: flex; flex-direction: column; gap: 0; }
+    .cart-page-item { display: grid; grid-template-columns: 100px 1fr auto auto; gap: 20px; align-items: center; padding: 24px 0; border-bottom: 1px solid var(--color-border); }
+    .cart-page-item-img { width: 100px; height: 100px; border-radius: var(--radius-md); background: var(--color-bg-elevated); display: flex; align-items: center; justify-content: center; }
+    .cart-page-item-img svg { width: 50px; height: 50px; color: var(--color-text-muted); }
+    .cart-page-item-info h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .cart-page-item-info p { font-size: 13px; color: var(--color-text-tertiary); margin-bottom: 12px; }
+    .cart-page-item-qty { display: flex; align-items: center; gap: 8px; }
+    .cart-page-item-qty button { width: 32px; height: 32px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: var(--color-bg); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .cart-page-item-qty button:hover { border-color: var(--color-text); }
+    .cart-page-item-qty span { font-size: 14px; font-weight: 600; min-width: 24px; text-align: center; }
+    .cart-page-item-price { font-size: 16px; font-weight: 700; }
+    .cart-page-item-remove { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--color-text-tertiary); cursor: pointer; transition: all 0.15s; border: none; background: none; }
+    .cart-page-item-remove:hover { color: var(--color-sale); background: rgba(196,30,58,0.08); }
+    .cart-summary { background: var(--color-bg-elevated); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: 32px; position: sticky; top: 100px; }
+    .cart-summary h3 { font-size: 18px; font-weight: 700; margin-bottom: 24px; }
+    .summary-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 14px; }
+    .summary-row span:first-child { color: var(--color-text-secondary); }
+    .summary-row span:last-child { font-weight: 600; }
+    .summary-row.total { border-top: 1px solid var(--color-border); padding-top: 16px; margin-top: 16px; font-size: 18px; font-weight: 700; }
+    .summary-row.total span:first-child { color: var(--color-text); }
+    .promo-input { display: flex; gap: 8px; margin: 20px 0; }
+    .promo-input input { flex: 1; padding: 10px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 14px; outline: none; }
+    .promo-input input:focus { border-color: var(--color-text); }
+    .promo-input button { padding: 10px 18px; border: 1px solid var(--color-text); background: var(--color-text); color: #fff; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+    .promo-input button:hover { opacity: 0.85; }
+    .cart-summary .btn { margin-bottom: 10px; }
+    .cart-summary-note { font-size: 12px; color: var(--color-text-tertiary); text-align: center; margin-top: 12px; }
+    .cart-empty { text-align: center; padding: 80px 0; }
+    .cart-empty svg { width: 80px; height: 80px; color: var(--color-text-muted); margin-bottom: 20px; }
+    .cart-empty h3 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .cart-empty p { color: var(--color-text-secondary); margin-bottom: 24px; }
+    @media (max-width: 1024px) { .cart-layout { grid-template-columns: 1fr; } .cart-summary { position: static; } }
+    @media (max-width: 640px) { .cart-page-item { grid-template-columns: 80px 1fr; gap: 12px; } .cart-page-item-price { grid-column: 2; text-align: left; } .cart-page-item-remove { grid-column: 2; justify-self: end; } }
+  </style>
 </head>
 <body>
-  <nav id="main-nav">
-    <div class="nav-logo" onclick="window.location.href='index.html'">
-      <img class="logo-mark" src="logo.jpg" alt="CX logo">
-      CYLLUX
-    </div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="products.html">Catalog</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="seller-dashboard.html">Seller Hub</a></li>
-    </ul>
-    <div class="nav-actions">
-      <span class="theme-label" id="theme-label">Dark</span>
-      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()"></div>
-      <button class="nav-icon-btn" id="nav-account-btn" onclick="goAccount()">👤</button>
-      <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
-        🛒
-        <span class="cart-badge" id="cart-badge">0</span>
-      </button>
-    </div>
-      <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
-        <span></span><span></span><span></span>
-      </button>
-  </nav>
 
-  <main>
-    <div class="cart-layout">
-      <div class="cart-items-area">
-        <div class="section-label">Your Bag</div>
-        <h1 class="section-title">Shopping <span class="crimson-slash">Cart</span></h1>
-        <div id="cart-items-container"></div>
-      </div>
-      <div class="cart-summary-area">
-        <div class="summary-title" style="font-weight: 700; margin-bottom: 24px;">Order Summary</div>
-        <div class="summary-line"><span>Subtotal</span><span id="summary-subtotal">₦0</span></div>
-        <div class="summary-line"><span>VAT (7.5%)</span><span id="summary-vat">₦0</span></div>
-        <div class="summary-total"><span>Total</span><span id="summary-total">₦0</span></div>
-        <button class="btn-primary checkout-btn" style="width: 100%; justify-content: center; margin-top: 24px;" onclick="window.location.href='checkout.html'">Proceed to Checkout →</button>
-        <div style="text-align:center; margin-top: 16px;"><a href="products.html" style="color: var(--text-muted);">Continue Shopping</a></div>
+  <header class="header scrolled" id="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo"><svg width="120" height="36" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="28" font-family="Inter, sans-serif" font-size="28" font-weight="900" fill="#111" letter-spacing="-1">CYLLUX</text>
+</svg></a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="shop.html" class="nav-link">Shop</a>
+        <a href="collections.html" class="nav-link">Collections</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <select id="currencySelect" class="currency-select" aria-label="Currency"></select>
+        <button class="icon-btn" aria-label="Search" id="searchBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+        <a href="account.html" class="icon-btn" aria-label="Account"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+        <button class="icon-btn cart-btn" aria-label="Cart" id="cartBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge" id="cartBadge">0</span></button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
       </div>
     </div>
-  </main>
+  </header>
 
-  <div class="toast" id="toast"><div id="toast-msg"></div></div>
-  <div id="pf-launcher" onclick="pfToggle()"><svg viewBox="0 0 24 24" width="26" height="26" fill="white"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg></div>
-  <div id="pf-window"><div class="pf-header"><span>🏠 Cyllux Assistant</span></div><div class="pf-messages" id="pf-messages"></div><div class="pf-input-row"><textarea id="pf-input" placeholder="Ask about design..." rows="1"></textarea><button id="pf-send" onclick="pfSend()">➤</button></div></div>
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <a href="index.html" class="logo"><svg width="120" height="36" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="28" font-family="Inter, sans-serif" font-size="28" font-weight="900" fill="#111" letter-spacing="-1">CYLLUX</text>
+</svg></a>
+      <button class="mobile-close" id="mobileClose" aria-label="Close menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+    <nav class="mobile-nav">
+      <a href="index.html" class="mobile-nav-link">Home</a>
+      <a href="shop.html" class="mobile-nav-link">Shop</a>
+      <a href="collections.html" class="mobile-nav-link">Collections</a>
+      <a href="about.html" class="mobile-nav-link">About</a>
+      <a href="contact.html" class="mobile-nav-link">Contact</a>
+    </nav>
+    <div class="mobile-menu-footer">
+      <a href="account.html" class="mobile-menu-footer-link">My Account</a>
+      <a href="admin.html" class="mobile-menu-footer-link">Admin Panel</a>
+      <a href="cart.html" class="mobile-menu-footer-link" id="mobileCartLink">Cart (0)</a>
+    </div>
+  </div>
+  <div class="mobile-overlay" id="mobileOverlay"></div>
 
-  <script src="data.js"></script>
-  <script src="cart.js"></script>
-  <script src="chatbot.js"></script>
-  
-  <script src="cart-page.js"></script>
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-container">
+      <button class="search-close" id="searchClose" aria-label="Close search"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <input type="text" class="search-input" placeholder="Search products, categories..." id="searchInput">
+      <div class="search-suggestions" id="searchSuggestions">
+        <!-- populated dynamically by store.js from your product catalog -->
+      </div>
+    </div>
+  </div>
+
+  <section class="cart-page">
+    <div class="container">
+      <div class="cart-page-header">
+        <div>
+          <h1>Your Cart</h1>
+          <span id="cartItemCount">0 items</span>
+        </div>
+        <a href="shop.html" class="link-arrow">Continue Shopping <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="cart-layout" id="cartLayout">
+        <div class="cart-items-list" id="cartItemsList">
+          <!-- Cart items are rendered dynamically by store.js from your saved cart -->
+        </div>
+
+        <div class="cart-summary">
+          <h3>Order Summary</h3>
+          <div class="summary-row"><span>Subtotal</span><span id="summarySubtotal">$0</span></div>
+          <div class="summary-row"><span>Shipping</span><span id="summaryShipping">Calculated at checkout</span></div>
+          <div class="summary-row"><span>Tax</span><span id="summaryTax">Calculated at checkout</span></div>
+          <div class="promo-input">
+            <input type="text" placeholder="Promo code" id="promoInput">
+            <button id="applyPromo">Apply</button>
+          </div>
+          <div class="summary-row total"><span>Estimated Total</span><span id="summaryTotal">$0</span></div>
+          <a href="checkout.html" class="btn btn-primary btn-full">Proceed to Checkout</a>
+          <p class="cart-summary-note">Shipping & taxes calculated at checkout. Free shipping on orders over $75.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-logo"><span>CYLLUX</span></a>
+          <p class="footer-desc">Elevating everyday essentials through thoughtful design, premium materials, and sustainable practices.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+            <a href="#" aria-label="Twitter"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-col"><h6>Shop</h6><a href="shop.html">New Arrivals</a><a href="shop.html">Best Sellers</a><a href="shop.html">Tech & Gadgets</a><a href="shop.html">Furniture</a><a href="shop.html">Lighting</a></div>
+        <div class="footer-col"><h6>Company</h6><a href="about.html">About Us</a><a href="about.html">Sustainability</a><a href="about.html">Careers</a><a href="about.html">Press</a><a href="admin.html">Admin Panel</a></div>
+        <div class="footer-col"><h6>Support</h6><a href="contact.html">Help Center</a><a href="contact.html">Shipping & Returns</a><a href="contact.html">Contact Us</a></div>
+        <div class="footer-col"><h6>Legal</h6><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cookie Policy</a></div>
+      </div>
+      <div class="footer-bottom"><span>&copy; 2026 Cyllux. All rights reserved.</span><span>Designed with precision.</span></div>
+    </div>
+  </footer>
+
+  <script src="store.js"></script>
+  <script src="main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      CylluxStore.renderCartPage();
+
+      document.getElementById('applyPromo').addEventListener('click', function() {
+        const code = document.getElementById('promoInput').value.trim();
+        if (code.toUpperCase() === 'CYLLUX10') {
+          CylluxStore.applyPromo(0.1);
+          if (typeof showToast === 'function') showToast('Promo code applied: 10% off!');
+        } else if (code) {
+          if (typeof showToast === 'function') showToast('Invalid promo code');
+        }
+      });
+    });
+  </script>
 </body>
 </html>

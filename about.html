@@ -1,756 +1,216 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>CYLLUX HOMES — About Us</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Cyllux</title>
+  <meta name="description" content="Learn about Cyllux, our mission, and commitment to sustainable design.">
+  
+  <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- BUG FIX 1: themes.js & mobile-nav.js moved to bottom with defer to prevent
-       blocking and "can't find DOM element" errors on early execution.
-       Removed duplicate theme.js (was loaded both here as themes.js and at bottom as theme.js). -->
-
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    /* ── ABOUT HERO ─────────────────────────────────────── */
-    .about-hero {
-      position: relative;
-      /* BUG FIX 2: Increased top padding to clear fixed nav on mobile.
-         Nav is ~64–72px tall; 120px gives breathing room at all sizes. */
-      padding: clamp(100px, 14vw, 160px) 5vw 80px;
-      overflow: hidden;
-    }
-
-    /* BUG FIX 3: Watermark was clamp(160px,22vw,320px) — at 320px viewport
-       that renders at ~70px which overflows and bleeds. Capped at 18vw
-       with a tighter max, and hidden below 480px so it doesn't crowd copy. */
-    .about-hero::before {
-      content: 'CX';
-      position: absolute;
-      right: -2vw;
-      top: 60px;
-      font-family: 'Playfair Display', serif;
-      font-weight: 900;
-      font-size: clamp(100px, 18vw, 280px);
-      color: var(--crimson);
-      opacity: 0.04;
-      line-height: 1;
-      pointer-events: none;
-      user-select: none;
-      letter-spacing: -8px;
-    }
-    @media (max-width: 480px) {
-      .about-hero::before { display: none; }
-    }
-
-    .about-hero-inner {
-      position: relative;
-      z-index: 1;
-      max-width: 760px;
-    }
-    .about-hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-weight: 900;
-      font-size: clamp(40px, 6vw, 88px);
-      letter-spacing: -2px;
-      line-height: 1.05;
-      margin-bottom: 28px;
-    }
-    /* BUG FIX 4: clamp min was 16px — fine, but on very narrow screens
-       the border-left adds 3px + 20px padding that eats into already-small
-       width. Reduced padding-left on mobile. */
-    .about-hero-lead {
-      font-size: clamp(15px, 2vw, 19px);
-      color: var(--text-secondary);
-      max-width: 560px;
-      line-height: 1.8;
-      border-left: 3px solid var(--crimson);
-      padding-left: clamp(14px, 4vw, 20px);
-      margin-top: 8px;
-    }
-
-    /* ── STATS STRIP ────────────────────────────────────── */
-    .about-stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      background: var(--bg-2);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    .stat {
-      text-align: center;
-      padding: 48px 16px;
-      border-right: 1px solid var(--border);
-      position: relative;
-      transition: background var(--transition);
-    }
-    .stat:last-child { border-right: none; }
-    .stat:hover { background: var(--bg-3); }
-    .stat::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 2px;
-      background: var(--crimson);
-      transition: width 0.35s ease;
-    }
-    .stat:hover::after { width: 60%; }
-
-    /* BUG FIX 5: stat-number used clamp(38px,4.5vw,56px) — "Available in"
-       and "Guaranteed" are long strings that overflow at mid-size.
-       Added word-break and reduced font for text-content stats. */
-    .stat-number {
-      display: block;
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(28px, 4vw, 52px);
-      font-weight: 900;
-      color: var(--crimson);
-      line-height: 1.1;
-      margin-bottom: 10px;
-      letter-spacing: -1px;
-      word-break: break-word;
-      hyphens: auto;
-    }
-    /* Text-only stat values (not short numbers) get smaller treatment */
-    .stat-number[data-type="text"] {
-      font-size: clamp(16px, 2.5vw, 24px);
-      letter-spacing: -0.5px;
-    }
-    .stat-label {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      display: block;
-    }
-    @media (max-width: 700px) {
-      .about-stats { grid-template-columns: 1fr 1fr; }
-      .stat:nth-child(2) { border-right: none; }
-      .stat:nth-child(3), .stat:nth-child(4) { border-top: 1px solid var(--border); }
-      .stat:nth-child(4) { border-right: none; }
-      .stat { padding: 36px 12px; }
-    }
-    @media (max-width: 400px) {
-      .about-stats { grid-template-columns: 1fr; }
-      .stat { border-right: none; border-top: 1px solid var(--border); }
-      .stat:first-child { border-top: none; }
-    }
-
-    /* ── STORY SECTION ──────────────────────────────────── */
-    .story-section {
-      padding: 100px 5vw;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: start;
-    }
-    @media (max-width: 860px) {
-      .story-section {
-        grid-template-columns: 1fr;
-        gap: 60px;
-        padding: 60px 5vw;
-      }
-    }
-    @media (max-width: 480px) {
-      .story-section { padding: 48px 5vw; gap: 48px; }
-    }
-
-    .story-heading {
-      font-family: 'Playfair Display', serif;
-      font-weight: 900;
-      font-size: clamp(26px, 3.5vw, 44px);
-      line-height: 1.15;
-      letter-spacing: -1.5px;
-      margin-bottom: 36px;
-    }
-    .story-timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-    .story-beat {
-      display: flex;
-      gap: 20px;
-      padding-bottom: 36px;
-      position: relative;
-    }
-    .story-beat:last-child { padding-bottom: 0; }
-    .story-beat::before {
-      content: '';
-      position: absolute;
-      left: 18px;
-      top: 40px;
-      bottom: 0;
-      width: 1px;
-      background: linear-gradient(to bottom, var(--crimson), transparent);
-    }
-    .story-beat:last-child::before { display: none; }
-    .beat-dot {
-      flex-shrink: 0;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: var(--crimson-dim);
-      border: 1px solid var(--border-active);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Playfair Display', serif;
-      font-weight: 800;
-      font-size: 13px;
-      color: var(--crimson);
-      position: relative;
-      z-index: 1;
-      transition: all var(--transition);
-    }
-    .story-beat:hover .beat-dot {
-      background: var(--crimson);
-      color: #fff;
-      box-shadow: 0 0 20px rgba(232,17,47,0.4);
-    }
-    .beat-body {
-      padding-top: 6px;
-      flex: 1;
-      min-width: 0; /* BUG FIX 6: prevents flex child from overflowing parent */
-    }
-    .beat-year {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--crimson);
-      margin-bottom: 6px;
-    }
-    .beat-text {
-      font-size: 14px;
-      line-height: 1.8;
-      color: var(--text-secondary);
-    }
-    .beat-text strong { color: var(--text-primary); font-weight: 600; }
-    .beat-text em { color: var(--crimson); font-style: normal; }
-
-    /* ── ETHOS ──────────────────────────────────────────── */
-    .ethos-heading {
-      font-family: 'Playfair Display', serif;
-      font-weight: 900;
-      font-size: clamp(26px, 3.5vw, 44px);
-      line-height: 1.15;
-      letter-spacing: -1.5px;
-      margin-bottom: 36px;
-    }
-    .ethos-list { display: flex; flex-direction: column; }
-    .ethos-item {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      padding: 22px 0;
-      border-bottom: 1px solid var(--border);
-      transition: border-color var(--transition);
-      cursor: default;
-    }
-    .ethos-item:first-of-type { border-top: 1px solid var(--border); }
-    .ethos-item:hover { border-color: var(--border-active); }
-    .ethos-icon {
-      flex-shrink: 0;
-      width: 48px;
-      height: 48px;
-      background: var(--crimson-dim);
-      border: 1px solid var(--border-active);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      transition: all var(--transition);
-    }
-    .ethos-item:hover .ethos-icon {
-      background: var(--crimson);
-      box-shadow: 0 4px 20px rgba(232,17,47,0.35);
-      transform: scale(1.06);
-    }
-    .ethos-text { flex: 1; min-width: 0; } /* BUG FIX 7: min-width:0 prevents overflow */
-    .ethos-text h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 5px;
-      letter-spacing: -0.2px;
-    }
-    .ethos-text p {
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.75;
-      margin: 0;
-    }
-
-    /* ── QUOTE BLOCK ────────────────────────────────────── */
-    .about-quote-section {
-      padding: 0 5vw 100px;
-    }
-    .about-quote-inner {
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--crimson);
-      padding: 56px clamp(24px, 5vw, 80px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* BUG FIX 8: Quote mark was 180px — collides with blockquote text
-       on mobile. Scaled down and pushed further behind. */
-    .about-quote-inner::before {
-      content: '\201C';
-      position: absolute;
-      top: -20px;
-      left: 20px;
-      font-size: clamp(100px, 18vw, 180px);
-      color: var(--crimson);
-      opacity: 0.06;
-      font-family: 'Playfair Display', serif;
-      line-height: 1;
-      pointer-events: none;
-    }
-    .about-quote-inner blockquote {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(16px, 2.4vw, 26px);
-      font-weight: 300;
-      font-style: italic;
-      color: var(--text-primary);
-      line-height: 1.65;
-      border: none;
-      padding: 0;
-      margin: 0 0 28px;
-      position: relative;
-      z-index: 1;
-      max-width: 800px;
-    }
-    .about-quote-inner blockquote strong {
-      font-weight: 700;
-      color: var(--crimson);
-      font-style: normal;
-    }
-    .quote-sig {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .quote-sig-line {
-      width: 40px;
-      height: 1px;
-      background: var(--crimson);
-      flex-shrink: 0;
-    }
-    .quote-sig-text {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: var(--crimson);
-    }
-
-    /* ── TEAM SECTION ───────────────────────────────────── */
-    /* BUG FIX 9: Team section CSS existed but HTML was missing.
-       Added the team section HTML below. */
-    .team-section {
-      padding: 100px 5vw;
-      background: var(--bg-2);
-      border-top: 1px solid var(--border);
-    }
-    .team-section .section-title {
-      margin-bottom: 0;
-    }
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 2px;
-      margin-top: 48px;
-    }
-    @media (max-width: 480px) {
-      .team-grid { grid-template-columns: 1fr; gap: 2px; }
-      .team-section { padding: 60px 5vw; }
-    }
-    .team-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      padding: 36px 28px;
-      transition: all var(--transition);
-      position: relative;
-      overflow: hidden;
-    }
-    .team-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--crimson);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.35s ease;
-    }
-    .team-card:hover {
-      border-color: var(--border-active);
-      transform: translateY(-4px);
-      box-shadow: var(--card-shadow);
-    }
-    .team-card:hover::after { transform: scaleX(1); }
-    .team-avatar {
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      background: var(--crimson-dim);
-      border: 2px solid var(--border-active);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      margin-bottom: 24px;
-      transition: all var(--transition);
-    }
-    .team-card:hover .team-avatar {
-      border-color: var(--crimson);
-      box-shadow: 0 0 24px rgba(232,17,47,0.25);
-    }
-    .team-name {
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      font-size: 17px;
-      color: var(--text-primary);
-      margin-bottom: 6px;
-    }
-    .team-role {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--crimson);
-      margin-bottom: 16px;
-    }
-    .team-bio {
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.7;
-    }
-
-    /* ── CTA SECTION ────────────────────────────────────── */
-    .about-cta {
-      padding: 100px 5vw;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    @media (max-width: 480px) {
-      .about-cta { padding: 64px 5vw; }
-    }
-    .about-cta::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at 50% 60%, var(--crimson-dim) 0%, transparent 65%);
-      pointer-events: none;
-    }
-    .about-cta-inner { position: relative; z-index: 1; }
-    .about-cta .section-label { justify-content: center; }
-    .about-cta .section-title { margin-bottom: 16px; }
-    .about-cta-lead {
-      color: var(--text-secondary);
-      max-width: 480px;
-      margin: 0 auto 44px;
-      line-height: 1.75;
-      font-size: 15px;
-    }
-    .about-cta-actions {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    /* BUG FIX 10: Buttons on mobile can be too wide if min-width not set.
-       Full-width stacked buttons below 420px. */
-    @media (max-width: 420px) {
-      .about-cta-actions {
-        flex-direction: column;
-        align-items: center;
-      }
-      .about-cta-actions .btn-primary,
-      .about-cta-actions .btn-outline {
-        width: 100%;
-        max-width: 280px;
-      }
-    }
-
-    /* ── SECTION DIVIDER ─────────────────────────────────  */
-    .about-divider {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 0 5vw;
-      margin: 0;
-    }
-    .about-divider::before, .about-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-    .about-divider-icon {
-      width: 32px;
-      height: 32px;
-      background: var(--crimson-dim);
-      border: 1px solid var(--border-active);
-      clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-family: 'Playfair Display', serif;
-      font-weight: 900;
-      color: var(--crimson);
-      flex-shrink: 0;
-    }
-
-    /* ── GLOBAL MOBILE SAFETY NETS ───────────────────────── */
-    /* BUG FIX 11: Images and media inside flex/grid containers on mobile */
-    img, video, svg { max-width: 100%; }
-
-    /* BUG FIX 12: Prevent any section from creating horizontal scroll */
-    main > * { max-width: 100%; box-sizing: border-box; }
-
-    @media (max-width: 480px) {
-      .about-quote-section { padding: 0 5vw 64px; }
-    }
+    .about-hero { background: var(--color-bg-dark); padding: 140px 0 80px; text-align: center; color: #fff; }
+    .about-hero h1 { font-size: 42px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; }
+    .about-hero p { color: rgba(255,255,255,0.55); font-size: 16px; max-width: 560px; margin: 0 auto; }
+    .about-story { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; padding: 100px 0; }
+    .about-story-img { background: var(--color-bg-elevated); border-radius: var(--radius-xl); height: 480px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--color-border); }
+    .about-story-img svg { width: 60%; height: 60%; color: var(--color-text-muted); opacity: 0.4; }
+    .about-story-content h2 { font-size: 32px; font-weight: 800; margin-bottom: 20px; letter-spacing: -0.5px; }
+    .about-story-content p { font-size: 16px; color: var(--color-text-secondary); line-height: 1.8; margin-bottom: 16px; }
+    .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 80px 0; }
+    .value-card { padding: 40px 32px; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-bg); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .value-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .value-icon { width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-bg-elevated); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: var(--color-text); }
+    .value-card h4 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .value-card p { font-size: 14px; color: var(--color-text-secondary); line-height: 1.7; }
+    .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 60px 0 100px; }
+    .team-card { text-align: center; }
+    .team-avatar { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800; color: #fff; }
+    .team-card h5 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .team-card span { font-size: 13px; color: var(--color-text-tertiary); }
+    @media (max-width: 1024px) { .about-story { grid-template-columns: 1fr; gap: 40px; } .values-grid { grid-template-columns: repeat(2, 1fr); } .team-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .values-grid { grid-template-columns: 1fr; } .team-grid { grid-template-columns: 1fr; } .about-story-img { height: 280px; } }
   </style>
 </head>
 <body>
-  <nav id="main-nav">
-    <div class="nav-logo" onclick="window.location.href='index.html'">
-      <img class="logo-mark" src="logo.jpg" alt="CX logo">
-      CYLLUX
-    </div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="products.html">Catalog</a></li>
-      <li><a href="about.html" class="active">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="seller-dashboard.html">Seller Hub</a></li>
-    </ul>
-    <div class="nav-actions">
-      <span class="theme-label" id="theme-label">Dark</span>
-      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()"></div>
-      <button class="nav-icon-btn" id="nav-account-btn" onclick="goAccount()">👤</button>
-      <button class="nav-icon-btn" onclick="window.location.href='cart.html'">
-        🛒
-        <span class="cart-badge" id="cart-badge">0</span>
-      </button>
-    </div>
-    <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
 
-  <main>
-
-    <!-- ══ HERO ══════════════════════════════════════════ -->
-    <div class="about-hero">
-      <div class="about-hero-inner">
-        <div class="section-label">Our Story</div>
-        <h1>We Design<br><span class="crimson-slash">Intelligent</span><br>Spaces.</h1>
-        <p class="about-hero-lead">
-          Founded in 2026, Cyllux Homes began with one conviction: that beautiful design and smart technology are not opposites — they are inseparable.
-        </p>
+  <header class="header scrolled" id="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo"><svg width="120" height="36" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="28" font-family="Inter, sans-serif" font-size="28" font-weight="900" fill="#111" letter-spacing="-1">CYLLUX</text>
+</svg></a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="shop.html" class="nav-link">Shop</a>
+        <a href="collections.html" class="nav-link">Collections</a>
+        <a href="about.html" class="nav-link active">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <select id="currencySelect" class="currency-select" aria-label="Currency"></select>
+        <button class="icon-btn" aria-label="Search" id="searchBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+        <a href="account.html" class="icon-btn" aria-label="Account"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+        <button class="icon-btn cart-btn" aria-label="Cart" id="cartBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge" id="cartBadge">0</span></button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
       </div>
     </div>
+  </header>
 
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <a href="index.html" class="logo"><svg width="120" height="36" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="28" font-family="Inter, sans-serif" font-size="28" font-weight="900" fill="#111" letter-spacing="-1">CYLLUX</text>
+</svg></a>
+      <button class="mobile-close" id="mobileClose" aria-label="Close menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+    <nav class="mobile-nav">
+      <a href="index.html" class="mobile-nav-link">Home</a>
+      <a href="shop.html" class="mobile-nav-link">Shop</a>
+      <a href="collections.html" class="mobile-nav-link">Collections</a>
+      <a href="about.html" class="mobile-nav-link active">About</a>
+      <a href="contact.html" class="mobile-nav-link">Contact</a>
+    </nav>
+    <div class="mobile-menu-footer">
+      <a href="account.html" class="mobile-menu-footer-link">My Account</a>
+      <a href="admin.html" class="mobile-menu-footer-link">Admin Panel</a>
+      <a href="cart.html" class="mobile-menu-footer-link" id="mobileCartLink">Cart (0)</a>
+    </div>
+  </div>
+  <div class="mobile-overlay" id="mobileOverlay"></div>
 
-    <!-- ══ STORY + ETHOS ══════════════════════════════════ -->
-    <div class="story-section">
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-container">
+      <button class="search-close" id="searchClose" aria-label="Close search"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <input type="text" class="search-input" placeholder="Search products, categories..." id="searchInput">
+      <div class="search-suggestions" id="searchSuggestions">
+        <!-- populated dynamically by store.js from your product catalog -->
+      </div>
+    </div>
+  </div>
 
-      <!-- Story — timeline format -->
-      <div>
-        <div class="section-label">The Foundation</div>
-        <h2 class="story-heading">Built on a<br>Bold Idea</h2>
-        <div class="story-timeline">
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer-header"><h3>Your Cart</h3><button class="cart-drawer-close" id="cartDrawerClose" aria-label="Close cart"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+    <div class="cart-drawer-items" id="cartDrawerItems">
+    </div>
+    <div class="cart-drawer-footer"><div class="cart-subtotal"><span>Subtotal</span><span class="cart-subtotal-amount" id="cartSubtotal">$0</span></div><p class="cart-note">Shipping and taxes calculated at checkout.</p><a href="checkout.html" class="btn btn-primary btn-full">Checkout</a><a href="cart.html" class="btn btn-outline btn-full">View Cart</a></div>
+  </div>
+  <div class="cart-overlay" id="cartOverlay"></div>
 
-          <div class="story-beat">
-            <div class="beat-dot">01</div>
-            <div class="beat-body">
-              <div class="beat-year">The Motive</div>
-              <p class="beat-text">
-                Our founder, a trained architect, kept watching Nigerian homeowners forced to choose between <strong>beauty and functionality</strong> because the market demanded it. Premium furniture importers had no tech literacy. Gadget stores had no design sensibility.
-              </p>
-            </div>
-          </div>
+  <section class="about-hero">
+    <div class="container">
+      <h1>Our Story</h1>
+      <p>We believe great design should be accessible, sustainable, and built to last. Since 2020, Cyllux has been redefining how people live.</p>
+    </div>
+  </section>
 
-          <div class="story-beat">
-            <div class="beat-dot">02</div>
-            <div class="beat-body">
-              <div class="beat-year">The Standard</div>
-              <p class="beat-text">
-                Our team of <strong>designers, technologists, and project managers</strong> serves clients across Lagos, Abuja, Port Harcourt, and beyond. Every engagement — from a single product purchase to a full residential overhaul — is guided by the same obsessive attention to how a space <em>feels</em> to live in.
-              </p>
-            </div>
-          </div>
+  <div class="container">
+    <div class="about-story">
+      <div class="about-story-img">
+        <svg viewBox="0 0 400 400" fill="none"><rect x="50" y="50" width="300" height="300" rx="20" stroke="currentColor" stroke-width="2" opacity="0.3"/><rect x="100" y="100" width="200" height="200" rx="12" stroke="currentColor" stroke-width="2" opacity="0.2"/><circle cx="200" cy="200" r="60" stroke="currentColor" stroke-width="2" opacity="0.15"/></svg>
+      </div>
+      <div class="about-story-content">
+        <h2>Designed for Real Life</h2>
+        <p>Cyllux started with a simple idea: the things we surround ourselves with should make life better, not more complicated. Founded in 2020, we set out to create a destination for modern living — where interior design, smart technology, and quality furniture converge.</p>
+        <p>Every product in our catalog is hand-selected for its craftsmanship, functionality, and aesthetic integrity. We partner with makers who share our values of sustainability and ethical production.</p>
+        <p>From the first sketch to the final delivery, we obsess over the details so you don't have to. Because when your home works beautifully, so does everything else.</p>
+      </div>
+    </div>
+  </div>
 
+  <section class="section section-light" id="values">
+    <div class="container">
+      <div class="section-header center" style="margin-bottom:48px;">
+        <h2 class="section-title">What We Stand For</h2>
+        <p class="section-subtitle">The principles that guide everything we do</p>
+      </div>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h4>Quality First</h4>
+          <p>We never compromise on materials or craftsmanship. Every product is tested for durability and performance before it reaches your home.</p>
         </div>
-      </div>
-
-      <!-- Ethos column -->
-      <div>
-        <div class="section-label">What We Stand For</div>
-        <h2 class="ethos-heading">Our Design<br>Ethos</h2>
-        <div class="ethos-list">
-
-          <div class="ethos-item">
-            <div class="ethos-icon">🏛️</div>
-            <div class="ethos-text">
-              <h3>Architecture-Led Thinking</h3>
-              <p>Every product we carry and every space we design begins with structural logic proportions, flow, and light before aesthetics are discussed.</p>
-            </div>
-          </div>
-
-          <div class="ethos-item">
-            <div class="ethos-icon">⚡</div>
-            <div class="ethos-text">
-              <h3>Technology as Infrastructure</h3>
-              <p>Smart home tech should be invisible until you need it. We integrate lighting, audio, and climate control so seamlessly they feel like part of the walls.</p>
-            </div>
-          </div>
-
-          <div class="ethos-item">
-            <div class="ethos-icon">🌍</div>
-            <div class="ethos-text">
-              <h3>Rooted in African Context</h3>
-              <p>Local materials, cultural touchpoints. Our designs are informed by where clients actually live, not showrooms in Milan or Copenhagen.</p>
-            </div>
-          </div>
-
-          <div class="ethos-item">
-            <div class="ethos-icon">♾️</div>
-            <div class="ethos-text">
-              <h3>Built to Last</h3>
-              <p>We reject planned obsolescence. Our furniture is sourced for structural longevity; our tech selections avoid dead-end ecosystems.</p>
-            </div>
-          </div>
-
-          <div class="ethos-item">
-            <div class="ethos-icon">🤝</div>
-            <div class="ethos-text">
-              <h3>Radical Transparency</h3>
-              <p>Pricing, timelines, material sourcing we share everything. Clients who understand what they're buying become partners, not just customers.</p>
-            </div>
-          </div>
-
+        <div class="value-card">
+          <div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg></div>
+          <h4>Sustainable Design</h4>
+          <p>We prioritize eco-friendly materials, minimal packaging, and responsible manufacturing to reduce our environmental footprint.</p>
         </div>
-      </div>
-
-    </div><!-- /story-section -->
-
-    <!-- ══ DIVIDER ════════════════════════════════════════ -->
-    <div class="about-divider"><div class="about-divider-icon">CX</div></div>
-
-    <!-- ══ QUOTE ══════════════════════════════════════════ -->
-    <div class="about-quote-section">
-      <div class="about-quote-inner">
-        <blockquote>
-          A home should do more than shelter you. It should reflect who you are, anticipate what you need, and grow more beautiful with time. That is the standard we hold every project to — <strong>without exception.</strong>
-        </blockquote>
-        <div class="quote-sig">
-          <div class="quote-sig-line"></div>
-          <div class="quote-sig-text">Cyllux Homes, Lagos · Est. 2026</div>
+        <div class="value-card">
+          <div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <h4>Timeless Aesthetics</h4>
+          <p>We design and curate products that transcend trends. Clean lines, neutral palettes, and functional beauty that lasts for years.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <h4>Customer Obsessed</h4>
+          <p>Your experience matters. From browsing to unboxing, we strive to make every interaction smooth, transparent, and delightful.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+          <h4>Accessible Innovation</h4>
+          <p>Smart home technology should be intuitive and affordable. We bridge the gap between cutting-edge tech and everyday usability.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+          <h4>Transparent Pricing</h4>
+          <p>Fair prices without hidden costs. We work directly with makers to bring you premium products at honest prices.</p>
         </div>
       </div>
     </div>
+  </section>
 
-    <!-- ══ TEAM ═══════════════════════════════════════════ -->
-    <!-- BUG FIX 9: This section was styled but entirely missing from HTML -->
-    <div class="team-section">
-      <div class="section-label">The People Behind the Work</div>
-      <h2 class="section-title">Meet the<br><span class="crimson-slash">Team</span></h2>
-      <div class="team-grid">
-
-        <div class="team-card">
-          <div class="team-avatar">🏛️</div>
-          <div class="team-name">Adaeze Okonkwo</div>
-          <div class="team-role">Founder & Creative Director</div>
-          <p class="team-bio">Trained architect with 14 years designing residential and hospitality spaces across West Africa. Founded Cyllux to close the gap between design ambition and smart technology.</p>
-        </div>
-
-        <div class="team-card">
-          <div class="team-avatar">⚙️</div>
-          <div class="team-name">Emeka Nwosu</div>
-          <div class="team-role">Head of Smart Home Integration</div>
-          <p class="team-bio">Electronics engineer turned systems thinker. Emeka oversees every smart home deployment, ensuring tech disappears into the architecture rather than competing with it.</p>
-        </div>
-
-        <div class="team-card">
-          <div class="team-avatar">🛋️</div>
-          <div class="team-name">Fatima Aliyu</div>
-          <div class="team-role">Lead Interior Designer</div>
-          <p class="team-bio">Fatima's work bridges Afro-contemporary aesthetics with European material quality — a combination she developed over six years sourcing furniture across Lagos and Milan.</p>
-        </div>
-
-        <div class="team-card">
-          <div class="team-avatar">📐</div>
-          <div class="team-name">Tunde Adeyemi</div>
-          <div class="team-role">Project Director</div>
-          <p class="team-bio">Keeps every project on time and on brief. Tunde coordinates our installers, logistics partners, and client liaisons across all active sites in Lagos and Abuja.</p>
-        </div>
-
+  <div class="container">
+    <div class="section-header center" style="margin-bottom:36px;padding-top:40px;">
+      <h2 class="section-title">Meet the Team</h2>
+      <p class="section-subtitle">The people behind the products</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2);">JD</div>
+        <h5>James Davies</h5>
+        <span>Founder & CEO</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #f093fb, #f5576c);">AL</div>
+        <h5>Aisha Lin</h5>
+        <span>Head of Design</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">MR</div>
+        <h5>Marcus Reed</h5>
+        <span>Chief Technology Officer</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">SK</div>
+        <h5>Sarah Kim</h5>
+        <span>Operations Director</span>
       </div>
     </div>
+  </div>
 
-    <!-- ══ CTA ════════════════════════════════════════════ -->
-    <div class="about-cta">
-      <div class="about-cta-inner">
-        <div class="section-label">Ready to Begin?</div>
-        <h2 class="section-title">Let's Build<br><span class="crimson-slash">Your Space</span></h2>
-        <p class="about-cta-lead">
-          Whether you have a clear vision or are starting from scratch, our team guides you from first brief to final installation — with full transparency at every step.
-        </p>
-        <div class="about-cta-actions">
-          <button class="btn-primary" onclick="window.location.href='contact.html'">Start a Project →</button>
-          <button class="btn-outline" onclick="window.location.href='products.html'">Browse Catalog</button>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-logo"><span>CYLLUX</span></a>
+          <p class="footer-desc">Elevating everyday essentials through thoughtful design, premium materials, and sustainable practices.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+            <a href="#" aria-label="Twitter"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+          </div>
         </div>
+        <div class="footer-col"><h6>Shop</h6><a href="shop.html">New Arrivals</a><a href="shop.html">Best Sellers</a><a href="shop.html">Tech & Gadgets</a><a href="shop.html">Furniture</a><a href="shop.html">Lighting</a></div>
+        <div class="footer-col"><h6>Company</h6><a href="about.html">About Us</a><a href="about.html">Sustainability</a><a href="about.html">Careers</a><a href="about.html">Press</a><a href="admin.html">Admin Panel</a></div>
+        <div class="footer-col"><h6>Support</h6><a href="contact.html">Help Center</a><a href="contact.html">Shipping & Returns</a><a href="contact.html">Contact Us</a></div>
+        <div class="footer-col"><h6>Legal</h6><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cookie Policy</a></div>
       </div>
-    </div>
-
-  </main>
-
-  <footer>
-    <div class="footer-bottom">
-      <div class="footer-copy">© 2026 <span style="color:var(--crimson)">Cyllux Homes</span>. All rights reserved.</div>
+      <div class="footer-bottom"><span>&copy; 2026 Cyllux. All rights reserved.</span><span>Designed with precision.</span></div>
     </div>
   </footer>
 
-  <div class="toast" id="toast"><div id="toast-msg"></div></div>
-  <div id="pf-launcher" onclick="pfToggle()">
-    <svg viewBox="0 0 24 24" width="26" height="26" fill="white">
-      <path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/>
-    </svg>
-  </div>
-  <div id="pf-window">
-    <div class="pf-header"><span>🏠 Cyllux Assistant</span></div>
-    <div class="pf-messages" id="pf-messages"></div>
-    <div class="pf-input-row">
-      <textarea id="pf-input" placeholder="Ask about design..." rows="1"></textarea>
-      <button id="pf-send" onclick="pfSend()">➤</button>
-    </div>
-  </div>
-
-  <!-- BUG FIX 1: Scripts moved to end of body with proper load order.
-       themes.js / mobile-nav.js were in <head> without defer — the DOM
-       doesn't exist yet when they run, so getElementById calls fail silently.
-       Removed duplicate: was themes.js in head + theme.js at bottom.
-       Correct file is themes.js (matches the toggleTheme() call in nav). -->
-  <script src="data.js"></script>
-  <script src="cart.js"></script>
-  <script src="chatbot.js"></script>
-  <script src="themes.js"></script>
-  <script src="mobile-nav.js"></script>
-  <script src="auth.js"></script>
+  <script src="store.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>

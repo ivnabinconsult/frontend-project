@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Cyllux</title>
+  <meta name="description" content="Manage your Cyllux product catalog — add, edit, and remove products.">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    .admin-page { padding: 120px 0 100px; }
+    .admin-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; flex-wrap: wrap; gap: 12px; }
+    .admin-header h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+    .admin-header p { color: var(--color-text-secondary); font-size: 14px; }
+    .admin-layout { display: grid; grid-template-columns: 400px 1fr; gap: 40px; align-items: start; }
+    .admin-card { background: var(--color-bg-elevated); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: 32px; position: sticky; top: 100px; }
+    .admin-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group input[type="url"],
+    .form-group select,
+    .form-group textarea {
+      width: 100%; padding: 11px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+      font-size: 14px; font-family: inherit; outline: none; background: var(--color-bg); color: var(--color-text);
+      transition: border-color 0.15s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--color-text); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .image-upload-zone {
+      border: 1.5px dashed var(--color-border); border-radius: var(--radius-md); padding: 20px; text-align: center;
+      cursor: pointer; transition: all 0.15s; background: var(--color-bg);
+    }
+    .image-upload-zone:hover { border-color: var(--color-text); }
+    .image-upload-zone input[type="file"] { display: none; }
+    .image-preview { width: 100%; height: 160px; border-radius: var(--radius-md); overflow: hidden; margin-top: 12px; background: var(--color-bg); display: none; align-items: center; justify-content: center; border: 1px solid var(--color-border-light); }
+    .image-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .form-actions { display: flex; gap: 10px; margin-top: 24px; }
+    .form-actions .btn { flex: 1; }
+    .checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+    .checkbox-row input { width: 16px; height: 16px; }
+
+    .admin-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+    .admin-toolbar span { font-size: 14px; color: var(--color-text-secondary); }
+    .product-table-wrap { border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+    .product-table { width: 100%; border-collapse: collapse; background: var(--color-bg); }
+    .product-table th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-tertiary); padding: 14px 16px; background: var(--color-bg-elevated); border-bottom: 1px solid var(--color-border); }
+    .product-table td { padding: 14px 16px; border-bottom: 1px solid var(--color-border-light); font-size: 14px; vertical-align: middle; }
+    .product-table tr:last-child td { border-bottom: none; }
+    .row-thumb { width: 48px; height: 48px; border-radius: var(--radius-sm); background: var(--color-bg-elevated); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+    .row-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .row-thumb svg { width: 22px; height: 22px; color: var(--color-text-muted); }
+    .row-name-cell { display: flex; align-items: center; gap: 12px; }
+    .row-name-cell h5 { font-size: 14px; font-weight: 600; }
+    .row-name-cell p { font-size: 12px; color: var(--color-text-tertiary); }
+    .stock-pill { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 100px; }
+    .stock-pill.in { background: rgba(34,197,94,0.12); color: #178a45; }
+    .stock-pill.low { background: rgba(245,166,35,0.15); color: #a1690a; }
+    .stock-pill.out { background: rgba(196,30,58,0.1); color: var(--color-sale); }
+    .table-actions { display: flex; gap: 8px; }
+    .table-actions button { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--color-border); background: var(--color-bg); color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s; }
+    .table-actions button:hover { border-color: var(--color-text); color: var(--color-text); }
+    .table-actions button.danger:hover { border-color: var(--color-sale); color: var(--color-sale); background: rgba(196,30,58,0.06); }
+    .admin-empty { text-align: center; padding: 60px 20px; color: var(--color-text-tertiary); }
+    .admin-empty svg { width: 60px; height: 60px; margin-bottom: 16px; opacity: 0.5; }
+    @media (max-width: 1024px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .admin-card { position: static; }
+      .product-table-wrap { overflow-x: auto; }
+      .product-table { min-width: 640px; }
+    }
+    @media (max-width: 480px) {
+      .form-row { grid-template-columns: 1fr; }
+      .admin-card { padding: 24px 20px; }
+      .form-actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header scrolled" id="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo"><svg width="120" height="36" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="28" font-family="Inter, sans-serif" font-size="28" font-weight="900" fill="#111" letter-spacing="-1">CYLLUX</text>
+</svg></a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="shop.html" class="nav-link">Shop</a>
+        <a href="collections.html" class="nav-link">Collections</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <select id="currencySelect" class="currency-select" aria-label="Currency"></select>
+        <button class="icon-btn" aria-label="Search" id="searchBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+        <a href="account.html" class="icon-btn" aria-label="Account"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+        <button class="icon-btn cart-btn" aria-label="Cart" id="cartBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge" id="cartBadge">0</span></button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <a href="index.html" class="logo"><svg width="120" height="36" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="28" font-family="Inter, sans-serif" font-size="28" font-weight="900" fill="#111" letter-spacing="-1">CYLLUX</text>
+</svg></a>
+      <button class="mobile-close" id="mobileClose" aria-label="Close menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+    <nav class="mobile-nav">
+      <a href="index.html" class="mobile-nav-link">Home</a>
+      <a href="shop.html" class="mobile-nav-link">Shop</a>
+      <a href="collections.html" class="mobile-nav-link">Collections</a>
+      <a href="about.html" class="mobile-nav-link">About</a>
+      <a href="contact.html" class="mobile-nav-link">Contact</a>
+    </nav>
+    <div class="mobile-menu-footer">
+      <a href="account.html" class="mobile-menu-footer-link">My Account</a>
+      <a href="admin.html" class="mobile-menu-footer-link">Admin Panel</a>
+      <a href="cart.html" class="mobile-menu-footer-link" id="mobileCartLink">Cart (0)</a>
+    </div>
+  </div>
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-container">
+      <button class="search-close" id="searchClose" aria-label="Close search"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <input type="text" class="search-input" placeholder="Search products, categories..." id="searchInput">
+      <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
+  </div>
+
+  <section class="admin-page">
+    <div class="container">
+
+      <!-- LOCK SCREEN — shown until the correct admin password is entered -->
+      <div id="adminLock" style="max-width:400px;margin:0 auto;">
+        <div class="admin-card" style="position:static;">
+          <div id="lockSetup">
+            <h3>Set Up Admin Access</h3>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:20px;">No admin password is set on this device yet. Create one now — only people who know it will be able to open this page on this browser.</p>
+            <div class="form-group">
+              <label for="setupPassword">New Password</label>
+              <input type="password" id="setupPassword" placeholder="At least 6 characters" autocomplete="new-password">
+            </div>
+            <div class="form-group">
+              <label for="setupPasswordConfirm">Confirm Password</label>
+              <input type="password" id="setupPasswordConfirm" placeholder="Re-enter password" autocomplete="new-password">
+            </div>
+            <p id="setupError" style="color:var(--color-sale);font-size:13px;display:none;margin-bottom:12px;"></p>
+            <button class="btn btn-primary btn-full" id="setupBtn">Create Password & Continue</button>
+          </div>
+
+          <div id="lockLogin" style="display:none;">
+            <h3>Admin Access</h3>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:20px;">Enter your admin password to manage products.</p>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+            </div>
+            <p id="loginError" style="color:var(--color-sale);font-size:13px;display:none;margin-bottom:12px;">Incorrect password.</p>
+            <button class="btn btn-primary btn-full" id="loginBtn">Unlock</button>
+            <p style="margin-top:16px;text-align:center;">
+              <a href="#" id="forgotPasswordLink" style="font-size:12px;color:var(--color-text-tertiary);text-decoration:underline;">Forgot password? Reset access on this device</a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD — hidden until authenticated -->
+      <div id="adminDashboard" style="display:none;">
+      <div class="admin-header">
+        <div>
+          <h1>Admin Panel</h1>
+          <p>Add, edit, and remove the products you sell. Everything here is stored on this device and instantly reflected on your Home, Shop, and Collections pages.</p>
+        </div>
+        <button class="btn btn-outline" id="logoutBtn">Log Out</button>
+      </div>
+
+      <div class="admin-layout">
+        <!-- ADD / EDIT PRODUCT FORM -->
+        <div class="admin-card">
+          <h3 id="formTitle">Add a Product</h3>
+          <form id="productForm">
+            <input type="hidden" id="productId">
+
+            <div class="form-group">
+              <label for="productName">Product Name *</label>
+              <input type="text" id="productName" placeholder="e.g. Ceramic Table Lamp" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="productPrice">Price (USD) *</label>
+                <input type="number" id="productPrice" min="0" step="0.01" placeholder="129.00" required>
+                <p style="font-size:12px;color:var(--color-text-tertiary);margin-top:6px;">Stored in USD. Shoppers automatically see it converted to their local currency.</p>
+              </div>
+              <div class="form-group">
+                <label for="productCompareAt">Compare-at Price ($)</label>
+                <input type="number" id="productCompareAt" min="0" step="0.01" placeholder="Optional">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="productCategory">Category *</label>
+                <input type="text" id="productCategory" placeholder="e.g. Lighting" required>
+              </div>
+              <div class="form-group">
+                <label for="productStock">Stock Quantity *</label>
+                <input type="number" id="productStock" min="0" step="1" placeholder="25" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="productDescription">Description</label>
+              <textarea id="productDescription" placeholder="Short product description..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Product Image</label>
+              <div class="image-upload-zone" id="imageUploadZone">
+                <input type="file" id="productImageFile" accept="image/*">
+                <p style="font-size:13px;color:var(--color-text-secondary);">Click to upload an image, or paste a URL below</p>
+              </div>
+              <input type="url" id="productImageUrl" placeholder="https://example.com/image.jpg" style="margin-top:10px;">
+              <div class="image-preview" id="imagePreview"><img id="imagePreviewImg" src="" alt=""></div>
+            </div>
+
+            <div class="form-group checkbox-row">
+              <input type="checkbox" id="productFeatured">
+              <label for="productFeatured" style="margin:0;">Feature on homepage</label>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-full" id="submitBtn">Add Product</button>
+              <button type="button" class="btn btn-outline" id="cancelEditBtn" style="display:none;">Cancel</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- PRODUCT LIST -->
+        <div>
+          <div class="admin-toolbar">
+            <span id="productCountLabel">0 products in your catalog</span>
+          </div>
+          <div class="product-table-wrap" id="productTableWrap">
+            <table class="product-table" id="productTable" style="display:none;">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="productTableBody"></tbody>
+            </table>
+            <div class="admin-empty" id="productTableEmpty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M3 7l2-4h14l2 4"/><path d="M9 11h6"/></svg>
+              <h3 style="font-size:18px;font-weight:700;margin-bottom:6px;color:var(--color-text);">No products yet</h3>
+              <p>Use the form on the left to add your first product to the store.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-logo"><span>CYLLUX</span></a>
+          <p class="footer-desc">Elevating everyday essentials through thoughtful design, premium materials, and sustainable practices.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+            <a href="#" aria-label="Twitter"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-col"><h6>Shop</h6><a href="shop.html">New Arrivals</a><a href="shop.html">Best Sellers</a><a href="shop.html">Tech & Gadgets</a><a href="shop.html">Furniture</a><a href="shop.html">Lighting</a></div>
+        <div class="footer-col"><h6>Company</h6><a href="about.html">About Us</a><a href="about.html">Sustainability</a><a href="about.html">Careers</a><a href="about.html">Press</a><a href="admin.html">Admin Panel</a></div>
+        <div class="footer-col"><h6>Support</h6><a href="contact.html">Help Center</a><a href="contact.html">Shipping & Returns</a><a href="contact.html">Contact Us</a></div>
+        <div class="footer-col"><h6>Legal</h6><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cookie Policy</a></div>
+      </div>
+      <div class="footer-bottom"><span>&copy; 2026 Cyllux. All rights reserved.</span><span>Designed with precision.</span></div>
+    </div>
+  </footer>
+
+  <script src="store.js"></script>
+  <script src="main.js"></script>
+  <script>
+    // ---- Admin access gate ----
+    // This restricts the dashboard to whoever knows the password set on
+    // THIS device/browser. It's a front-door lock, not a server-side
+    // login system — anyone who opens this file's source in dev tools
+    // could bypass it, since there's no backend to enforce it remotely.
+    (function () {
+      const ADMIN_HASH_KEY = 'cyllux_admin_hash';
+      const SESSION_KEY = 'cyllux_admin_session';
+
+      const lockEl = document.getElementById('adminLock');
+      const dashboardEl = document.getElementById('adminDashboard');
+      const setupView = document.getElementById('lockSetup');
+      const loginView = document.getElementById('lockLogin');
+
+      async function sha256(text) {
+        const enc = new TextEncoder().encode(text);
+        const buf = await crypto.subtle.digest('SHA-256', enc);
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+
+      function unlock() {
+        sessionStorage.setItem(SESSION_KEY, '1');
+        lockEl.style.display = 'none';
+        dashboardEl.style.display = '';
+      }
+
+      function showSetup() {
+        setupView.style.display = '';
+        loginView.style.display = 'none';
+        lockEl.style.display = '';
+        dashboardEl.style.display = 'none';
+      }
+
+      function showLogin() {
+        setupView.style.display = 'none';
+        loginView.style.display = '';
+        lockEl.style.display = '';
+        dashboardEl.style.display = 'none';
+      }
+
+      if (sessionStorage.getItem(SESSION_KEY) === '1' && localStorage.getItem(ADMIN_HASH_KEY)) {
+        unlock();
+      } else if (localStorage.getItem(ADMIN_HASH_KEY)) {
+        showLogin();
+      } else {
+        showSetup();
+      }
+
+      document.getElementById('setupBtn').addEventListener('click', async function () {
+        const pass = document.getElementById('setupPassword').value;
+        const confirmPass = document.getElementById('setupPasswordConfirm').value;
+        const errorEl = document.getElementById('setupError');
+        errorEl.style.display = 'none';
+
+        if (pass.length < 6) {
+          errorEl.textContent = 'Password must be at least 6 characters.';
+          errorEl.style.display = '';
+          return;
+        }
+        if (pass !== confirmPass) {
+          errorEl.textContent = 'Passwords do not match.';
+          errorEl.style.display = '';
+          return;
+        }
+        const hash = await sha256(pass);
+        localStorage.setItem(ADMIN_HASH_KEY, hash);
+        unlock();
+      });
+
+      document.getElementById('loginBtn').addEventListener('click', async function () {
+        const pass = document.getElementById('loginPassword').value;
+        const errorEl = document.getElementById('loginError');
+        const hash = await sha256(pass);
+        if (hash === localStorage.getItem(ADMIN_HASH_KEY)) {
+          errorEl.style.display = 'none';
+          unlock();
+        } else {
+          errorEl.style.display = '';
+        }
+      });
+
+      document.getElementById('loginPassword').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') document.getElementById('loginBtn').click();
+      });
+      document.getElementById('setupPasswordConfirm').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') document.getElementById('setupBtn').click();
+      });
+
+      document.getElementById('forgotPasswordLink').addEventListener('click', function (e) {
+        e.preventDefault();
+        if (confirm('This will remove the saved admin password on this device and let you set a new one. Your products are not affected. Continue?')) {
+          localStorage.removeItem(ADMIN_HASH_KEY);
+          sessionStorage.removeItem(SESSION_KEY);
+          showSetup();
+        }
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', function () {
+        sessionStorage.removeItem(SESSION_KEY);
+        showLogin();
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const form = document.getElementById('productForm');
+      const idField = document.getElementById('productId');
+      const nameField = document.getElementById('productName');
+      const priceField = document.getElementById('productPrice');
+      const compareField = document.getElementById('productCompareAt');
+      const categoryField = document.getElementById('productCategory');
+      const stockField = document.getElementById('productStock');
+      const descField = document.getElementById('productDescription');
+      const featuredField = document.getElementById('productFeatured');
+      const imageFileField = document.getElementById('productImageFile');
+      const imageUrlField = document.getElementById('productImageUrl');
+      const imagePreview = document.getElementById('imagePreview');
+      const imagePreviewImg = document.getElementById('imagePreviewImg');
+      const uploadZone = document.getElementById('imageUploadZone');
+      const submitBtn = document.getElementById('submitBtn');
+      const cancelBtn = document.getElementById('cancelEditBtn');
+      const formTitle = document.getElementById('formTitle');
+
+      let currentImageData = '';
+
+      uploadZone.addEventListener('click', () => imageFileField.click());
+
+      imageFileField.addEventListener('change', function () {
+        const file = this.files && this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          currentImageData = e.target.result;
+          imageUrlField.value = '';
+          showPreview(currentImageData);
+        };
+        reader.readAsDataURL(file);
+      });
+
+      imageUrlField.addEventListener('input', function () {
+        const url = this.value.trim();
+        if (url) {
+          currentImageData = url;
+          imageFileField.value = '';
+          showPreview(url);
+        }
+      });
+
+      function showPreview(src) {
+        imagePreviewImg.src = src;
+        imagePreview.style.display = 'flex';
+      }
+
+      function hidePreview() {
+        imagePreview.style.display = 'none';
+        imagePreviewImg.src = '';
+      }
+
+      function resetForm() {
+        form.reset();
+        idField.value = '';
+        currentImageData = '';
+        hidePreview();
+        formTitle.textContent = 'Add a Product';
+        submitBtn.textContent = 'Add Product';
+        cancelBtn.style.display = 'none';
+      }
+
+      cancelBtn.addEventListener('click', resetForm);
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const price = parseFloat(priceField.value);
+        const compareAt = compareField.value ? parseFloat(compareField.value) : null;
+        const stock = parseInt(stockField.value, 10);
+
+        if (isNaN(price) || price < 0) {
+          if (typeof showToast === 'function') showToast('Please enter a valid price');
+          return;
+        }
+
+        const payload = {
+          name: nameField.value.trim(),
+          price: price,
+          compareAtPrice: compareAt,
+          category: categoryField.value.trim(),
+          stock: isNaN(stock) ? 0 : stock,
+          description: descField.value.trim(),
+          featured: featuredField.checked,
+          image: currentImageData || null
+        };
+
+        if (idField.value) {
+          CylluxStore.updateProduct(idField.value, payload);
+          if (typeof showToast === 'function') showToast('Product updated');
+        } else {
+          CylluxStore.addProduct(payload);
+          if (typeof showToast === 'function') showToast('Product added to your catalog');
+        }
+
+        resetForm();
+        renderTable();
+        CylluxStore.renderProductGrid();
+      });
+
+      function editProduct(id) {
+        const p = CylluxStore.getProduct(id);
+        if (!p) return;
+        idField.value = p.id;
+        nameField.value = p.name;
+        priceField.value = p.price;
+        compareField.value = p.compareAtPrice || '';
+        categoryField.value = p.category || '';
+        stockField.value = p.stock != null ? p.stock : '';
+        descField.value = p.description || '';
+        featuredField.checked = !!p.featured;
+        currentImageData = p.image || '';
+        if (p.image) {
+          if (/^https?:\/\//.test(p.image)) imageUrlField.value = p.image;
+          showPreview(p.image);
+        } else {
+          hidePreview();
+        }
+        formTitle.textContent = 'Edit Product';
+        submitBtn.textContent = 'Save Changes';
+        cancelBtn.style.display = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function deleteProductConfirm(id) {
+        const p = CylluxStore.getProduct(id);
+        if (!p) return;
+        if (confirm('Delete "' + p.name + '"? This cannot be undone.')) {
+          CylluxStore.deleteProduct(id);
+          renderTable();
+          CylluxStore.renderProductGrid();
+          if (typeof showToast === 'function') showToast('Product deleted');
+        }
+      }
+
+      function stockPill(stock) {
+        if (stock <= 0) return '<span class="stock-pill out">Out of stock</span>';
+        if (stock <= 5) return '<span class="stock-pill low">Low: ' + stock + '</span>';
+        return '<span class="stock-pill in">' + stock + ' in stock</span>';
+      }
+
+      function renderTable() {
+        const products = CylluxStore.getProducts();
+        const table = document.getElementById('productTable');
+        const empty = document.getElementById('productTableEmpty');
+        const body = document.getElementById('productTableBody');
+        const countLabel = document.getElementById('productCountLabel');
+
+        countLabel.textContent = products.length + ' product' + (products.length !== 1 ? 's' : '') + ' in your catalog';
+
+        if (!products.length) {
+          table.style.display = 'none';
+          empty.style.display = '';
+          return;
+        }
+
+        table.style.display = '';
+        empty.style.display = 'none';
+
+        body.innerHTML = products.map(p => {
+          const thumb = p.image
+            ? '<img src="' + CylluxStore.escapeHtml(p.image) + '" alt="">'
+            : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>';
+          const priceHtml = (p.compareAtPrice && p.compareAtPrice > p.price)
+            ? CylluxStore.moneyUSD(p.price) + ' <span style="text-decoration:line-through;color:var(--color-text-tertiary);font-size:12px;">' + CylluxStore.moneyUSD(p.compareAtPrice) + '</span>'
+            : CylluxStore.moneyUSD(p.price);
+
+          return (
+            '<tr>' +
+              '<td><div class="row-name-cell"><div class="row-thumb">' + thumb + '</div><div><h5>' + CylluxStore.escapeHtml(p.name) + (p.featured ? ' ⭐' : '') + '</h5><p>Added ' + new Date(p.createdAt).toLocaleDateString() + '</p></div></div></td>' +
+              '<td>' + CylluxStore.escapeHtml(p.category || '—') + '</td>' +
+              '<td>' + priceHtml + '</td>' +
+              '<td>' + stockPill(p.stock || 0) + '</td>' +
+              '<td><div class="table-actions">' +
+                '<button data-action="edit" data-id="' + p.id + '" aria-label="Edit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg></button>' +
+                '<button data-action="delete" data-id="' + p.id + '" class="danger" aria-label="Delete"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>' +
+              '</div></td>' +
+            '</tr>'
+          );
+        }).join('');
+
+        body.querySelectorAll('[data-action="edit"]').forEach(btn => {
+          btn.addEventListener('click', () => editProduct(btn.dataset.id));
+        });
+        body.querySelectorAll('[data-action="delete"]').forEach(btn => {
+          btn.addEventListener('click', () => deleteProductConfirm(btn.dataset.id));
+        });
+      }
+
+      renderTable();
+    })();
+  </script>
+</body>
+</html>

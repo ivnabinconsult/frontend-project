@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collections — Cyllux</title>
+  <meta name="description" content="Curated interior design, tech, and furniture collections by Cyllux.">
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    .collections-hero { background: var(--color-bg-dark); padding: 140px 0 80px; text-align: center; color: #fff; }
+    .collections-hero h1 { font-size: 42px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; }
+    .collections-hero p { color: rgba(255,255,255,0.55); font-size: 16px; max-width: 520px; margin: 0 auto; }
+    .collection-featured { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 80px; }
+    .collection-featured-card { position: relative; border-radius: var(--radius-xl); overflow: hidden; height: 480px; display: flex; align-items: flex-end; padding: 40px; color: #fff; transition: transform 0.4s ease, box-shadow 0.4s ease; cursor: pointer; }
+    .collection-featured-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-xl); }
+    .collection-featured-card .bg { position: absolute; inset: 0; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); z-index: 0; }
+    .collection-featured-card:nth-child(2) .bg { background: linear-gradient(135deg, #2e1a1a 0%, #3e1616 100%); }
+    .collection-featured-card .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%); z-index: 1; }
+    .collection-featured-card .content { position: relative; z-index: 2; }
+    .collection-featured-card .tag { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; margin-bottom: 12px; display: block; }
+    .collection-featured-card h3 { font-size: 32px; font-weight: 800; margin-bottom: 12px; }
+    .collection-featured-card p { font-size: 15px; opacity: 0.8; line-height: 1.6; margin-bottom: 20px; max-width: 360px; }
+    .collection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 80px; }
+    .collection-card { position: relative; border-radius: var(--radius-lg); overflow: hidden; height: 360px; display: flex; align-items: flex-end; padding: 28px; color: #fff; cursor: pointer; transition: transform 0.4s ease, box-shadow 0.4s ease; border: 1px solid var(--color-border-light); }
+    .collection-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .collection-card .bg { position: absolute; inset: 0; background: linear-gradient(135deg, #1a2e1a 0%, #163e16 100%); z-index: 0; }
+    .collection-card:nth-child(2) .bg { background: linear-gradient(135deg, #2e2e1a 0%, #3e3e16 100%); }
+    .collection-card:nth-child(3) .bg { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
+    .collection-card:nth-child(4) .bg { background: linear-gradient(135deg, #2e1a2e 0%, #3e163e 100%); }
+    .collection-card:nth-child(5) .bg { background: linear-gradient(135deg, #1a2e2e 0%, #163e3e 100%); }
+    .collection-card:nth-child(6) .bg { background: linear-gradient(135deg, #2e1a1a 0%, #3e1616 100%); }
+    .collection-card .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%); z-index: 1; }
+    .collection-card .content { position: relative; z-index: 2; }
+    .collection-card h4 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .collection-card span { font-size: 13px; opacity: 0.75; font-weight: 500; }
+    .collection-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; color: rgba(255,255,255,0.08); z-index: 0; }
+    @media (max-width: 1024px) { .collection-featured { grid-template-columns: 1fr; } .collection-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .collection-grid { grid-template-columns: 1fr; } .collection-featured-card { height: 360px; } }
+  </style>
+</head>
+<body>
+
+  <header class="header scrolled" id="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo"><svg width="120" height="36" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="28" font-family="Inter, sans-serif" font-size="28" font-weight="900" fill="#111" letter-spacing="-1">CYLLUX</text>
+</svg></a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="shop.html" class="nav-link">Shop</a>
+        <a href="collections.html" class="nav-link active">Collections</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <select id="currencySelect" class="currency-select" aria-label="Currency"></select>
+        <button class="icon-btn" aria-label="Search" id="searchBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+        <a href="account.html" class="icon-btn" aria-label="Account"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+        <button class="icon-btn cart-btn" aria-label="Cart" id="cartBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge" id="cartBadge">0</span></button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <a href="index.html" class="logo"><svg width="120" height="36" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="28" font-family="Inter, sans-serif" font-size="28" font-weight="900" fill="#111" letter-spacing="-1">CYLLUX</text>
+</svg></a>
+      <button class="mobile-close" id="mobileClose" aria-label="Close menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+    <nav class="mobile-nav">
+      <a href="index.html" class="mobile-nav-link">Home</a>
+      <a href="shop.html" class="mobile-nav-link">Shop</a>
+      <a href="collections.html" class="mobile-nav-link active">Collections</a>
+      <a href="about.html" class="mobile-nav-link">About</a>
+      <a href="contact.html" class="mobile-nav-link">Contact</a>
+    </nav>
+    <div class="mobile-menu-footer">
+      <a href="account.html" class="mobile-menu-footer-link">My Account</a>
+      <a href="admin.html" class="mobile-menu-footer-link">Admin Panel</a>
+      <a href="cart.html" class="mobile-menu-footer-link" id="mobileCartLink">Cart (0)</a>
+    </div>
+  </div>
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-container">
+      <button class="search-close" id="searchClose" aria-label="Close search"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <input type="text" class="search-input" placeholder="Search products, categories..." id="searchInput">
+      <div class="search-suggestions" id="searchSuggestions">
+        <!-- populated dynamically by store.js from your product catalog -->
+      </div>
+    </div>
+  </div>
+
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer-header"><h3>Your Cart</h3><button class="cart-drawer-close" id="cartDrawerClose" aria-label="Close cart"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+    <div class="cart-drawer-items" id="cartDrawerItems">
+    </div>
+    <div class="cart-drawer-footer"><div class="cart-subtotal"><span>Subtotal</span><span class="cart-subtotal-amount" id="cartSubtotal">$0</span></div><p class="cart-note">Shipping and taxes calculated at checkout.</p><a href="checkout.html" class="btn btn-primary btn-full">Checkout</a><a href="cart.html" class="btn btn-outline btn-full">View Cart</a></div>
+  </div>
+  <div class="cart-overlay" id="cartOverlay"></div>
+
+  <section class="collections-hero">
+    <div class="container">
+      <h1>Curated Collections</h1>
+      <p>Handpicked themes for every space and lifestyle. Explore our stories through design.</p>
+    </div>
+  </section>
+
+  <div class="container" style="padding: 80px 0 100px;">
+    <div class="collection-featured">
+      <div class="collection-featured-card">
+        <div class="bg"></div>
+        <div class="overlay"></div>
+        <svg class="collection-icon" viewBox="0 0 100 100" fill="none"><path d="M20 50L50 20l30 30v40H20V50z" stroke="currentColor" stroke-width="1"/><path d="M40 90V60h20v30" stroke="currentColor" stroke-width="1"/></svg>
+        <div class="content">
+          <span class="tag">Featured Collection</span>
+          <h3>The Smart Home</h3>
+          <p>Seamlessly integrate technology into your living space with our curated selection of smart devices, automated lighting, and intelligent climate control.</p>
+          <a href="shop.html" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.3);">Explore Collection</a>
+        </div>
+      </div>
+      <div class="collection-featured-card">
+        <div class="bg"></div>
+        <div class="overlay"></div>
+        <svg class="collection-icon" viewBox="0 0 100 100" fill="none"><rect x="25" y="30" width="50" height="50" rx="4" stroke="currentColor" stroke-width="1"/><path d="M25 30l25-15 25 15" stroke="currentColor" stroke-width="1"/></svg>
+        <div class="content">
+          <span class="tag">Featured Collection</span>
+          <h3>Scandinavian Living</h3>
+          <p>Clean lines, natural materials, and functional beauty. Discover furniture and decor that embody the Nordic philosophy of hygge and simplicity.</p>
+          <a href="shop.html" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.3);">Explore Collection</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header" style="margin-bottom:36px;">
+      <div><h2 class="section-title">Browse by Theme</h2><p class="section-subtitle">Find inspiration for every room</p></div>
+    </div>
+
+    <div class="collection-grid">
+      <a href="shop.html" class="collection-card">
+        <div class="bg"></div>
+        <div class="overlay"></div>
+        <svg class="collection-icon" viewBox="0 0 100 100" fill="none"><rect x="30" y="40" width="40" height="40" rx="4" stroke="currentColor" stroke-width="1"/><path d="M30 40V30a20 20 0 0140 0v10" stroke="currentColor" stroke-width="1"/></svg>
+        <div class="content"><h4>Minimalist Bedroom</h4><span>24 Products</span></div>
+      </a>
+      <a href="shop.html" class="collection-card">
+        <div class="bg"></div>
+        <div class="overlay"></div>
+        <svg class="collection-icon" viewBox="0 0 100 100" fill="none"><rect x="20" y="50" width="60" height="30" rx="4" stroke="currentColor" stroke-width="1"/><path d="M30 50V30a20 20 0 0140 0v20" stroke="currentColor" stroke-width="1"/></svg>
+        <div class="content"><h4>Modern Kitchen</h4><span>18 Products</span></div>
+      </a>
+      <a href="shop.html" class="collection-card">
+        <div class="bg"></div>
+        <div class="overlay"></div>
+        <svg class="collection-icon" viewBox="0 0 100 100" fill="none"><path d="M20 60h60v20H20z" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/><path d="M30 60V40a20 20 0 0140 0v20" stroke="currentColor" stroke-width="1"/></svg>
+        <div class="content"><h4>Home Office</h4><span>31 Products</span></div>
+      </a>
+      <a href="shop.html" class="collection-card">
+        <div class="bg"></div>
+        <div class="overlay"></div>
+        <svg class="collection-icon" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="1"/><circle cx="50" cy="50" r="15" stroke="currentColor" stroke-width="1"/></svg>
+        <div class="content"><h4>Ambient Lighting</h4><span>15 Products</span></div>
+      </a>
+      <a href="shop.html" class="collection-card">
+        <div class="bg"></div>
+        <div class="overlay"></div>
+        <svg class="collection-icon" viewBox="0 0 100 100" fill="none"><rect x="30" y="30" width="40" height="50" rx="4" stroke="currentColor" stroke-width="1"/><path d="M40 30V20a10 10 0 0120 0v10" stroke="currentColor" stroke-width="1"/></svg>
+        <div class="content"><h4>Sustainable Living</h4><span>22 Products</span></div>
+      </a>
+      <a href="shop.html" class="collection-card">
+        <div class="bg"></div>
+        <div class="overlay"></div>
+        <svg class="collection-icon" viewBox="0 0 100 100" fill="none"><path d="M25 50h50l-10 30H35z" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/><path d="M35 50V35a15 15 0 0130 0v15" stroke="currentColor" stroke-width="1"/></svg>
+        <div class="content"><h4>Outdoor Comfort</h4><span>12 Products</span></div>
+      </a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-logo"><span>CYLLUX</span></a>
+          <p class="footer-desc">Elevating everyday essentials through thoughtful design, premium materials, and sustainable practices.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+            <a href="#" aria-label="Twitter"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-col"><h6>Shop</h6><a href="shop.html">New Arrivals</a><a href="shop.html">Best Sellers</a><a href="shop.html">Tech & Gadgets</a><a href="shop.html">Furniture</a><a href="shop.html">Lighting</a></div>
+        <div class="footer-col"><h6>Company</h6><a href="about.html">About Us</a><a href="about.html">Sustainability</a><a href="about.html">Careers</a><a href="about.html">Press</a><a href="admin.html">Admin Panel</a></div>
+        <div class="footer-col"><h6>Support</h6><a href="contact.html">Help Center</a><a href="contact.html">Shipping & Returns</a><a href="contact.html">Contact Us</a></div>
+        <div class="footer-col"><h6>Legal</h6><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cookie Policy</a></div>
+      </div>
+      <div class="footer-bottom"><span>&copy; 2026 Cyllux. All rights reserved.</span><span>Designed with precision.</span></div>
+    </div>
+  </footer>
+
+  <script src="store.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
