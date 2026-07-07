@@ -315,7 +315,7 @@ ul, ol {
 }
 
 .header.scrolled .nav-link {
-  color: var(--color-text-secondary);
+  color: var(--color-text);
 }
 
 .header.scrolled .nav-link:hover,
@@ -353,6 +353,35 @@ ul, ol {
 
 .header.scrolled .icon-btn:hover {
   background: rgba(0,0,0,0.05);
+}
+
+.currency-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+  opacity: 0.85;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 7px 24px 7px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='3'><path d='m6 9 6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  transition: all var(--transition-fast);
+}
+
+.currency-select:hover {
+  opacity: 1;
+}
+
+.currency-select option {
+  color: var(--color-text);
+  background: var(--color-bg);
 }
 
 .cart-badge {
@@ -910,6 +939,16 @@ ul, ol {
   height: 40px;
   background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
   animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* Reserve room at the bottom of the hero on desktop so the vertically-centered
+   content (title/subtitle/buttons) can never overlap the "Scroll" indicator,
+   even on shorter browser window heights. Mobile already avoids this via its
+   own stacked-button layout, so it's left untouched. */
+@media (min-width: 769px) {
+  .hero {
+    padding-bottom: 110px;
+  }
 }
 
 @keyframes scrollPulse {
