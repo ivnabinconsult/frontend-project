@@ -211,156 +211,9 @@
     return orderId;
   }
 
-  // ---------- currency ----------
-  const CURRENCY_OVERRIDE_KEY = 'cyllux_currency_override';
-  const RATES_CACHE_KEY = 'cyllux_rates_cache';
-  const RATES_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24h
-
-  const SUPPORTED_CURRENCIES = {
-    USD: 'US Dollar',
-    EUR: 'Euro',
-    GBP: 'British Pound',
-    NGN: 'Nigerian Naira',
-    KES: 'Kenyan Shilling',
-    GHS: 'Ghanaian Cedi',
-    ZAR: 'South African Rand',
-    EGP: 'Egyptian Pound',
-    INR: 'Indian Rupee',
-    CAD: 'Canadian Dollar',
-    AUD: 'Australian Dollar'
-  };
-
-  // fallback: guess a currency from the browser's own locale, used only
-  // if IP-based geolocation lookup is unavailable (offline, blocked, etc.)
-  const REGION_TO_CURRENCY = {
-    US: 'USD', GB: 'GBP', NG: 'NGN', KE: 'KES', GH: 'GHS', ZA: 'ZAR',
-    EG: 'EGP', IN: 'INR', CA: 'CAD', AU: 'AUD',
-    DE: 'EUR', FR: 'EUR', ES: 'EUR', IT: 'EUR', NL: 'EUR', IE: 'EUR', PT: 'EUR'
-  };
-
-  let currentCurrency = 'USD';
-  let currentRate = 1;
-
-  function detectCurrencyFromLocale() {
-    try {
-      const locale = navigator.language || 'en-US';
-      const region = locale.split('-')[1];
-      if (region && REGION_TO_CURRENCY[region.toUpperCase()]) {
-        return REGION_TO_CURRENCY[region.toUpperCase()];
-      }
-    } catch (e) { /* ignore */ }
-    return 'USD';
-  }
-
-  function fetchWithTimeout(url, ms) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), ms);
-    return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer));
-  }
-
-  async function fetchGeoCurrency() {
-    try {
-      const res = await fetchWithTimeout('https://ipwho.is/', 4000);
-      const data = await res.json();
-      const code = data && data.currency && data.currency.code;
-      if (code && SUPPORTED_CURRENCIES[code]) return code;
-    } catch (e) { /* network unavailable or blocked — fall back silently */ }
-    return null;
-  }
-
-  async function fetchRates() {
-    const cached = readJSON(RATES_CACHE_KEY, null);
-    if (cached && cached.rates && (Date.now() - cached.fetchedAt) < RATES_MAX_AGE_MS) {
-      return cached.rates;
-    }
-    try {
-      const res = await fetchWithTimeout('https://open.er-api.com/v6/latest/USD', 4000);
-      const data = await res.json();
-      if (data && data.rates) {
-        writeJSON(RATES_CACHE_KEY, { rates: data.rates, fetchedAt: Date.now() });
-        return data.rates;
-      }
-    } catch (e) { /* network unavailable — use cache or flat 1:1 */ }
-    return (cached && cached.rates) || null;
-  }
-
-  function getCurrentCurrency() {
-    return currentCurrency;
-  }
-
-  async function setCurrency(code) {
-    if (!SUPPORTED_CURRENCIES[code]) return;
-    currentCurrency = code;
-    writeJSON(CURRENCY_OVERRIDE_KEY, code);
-    const rates = await fetchRates();
-    currentRate = (rates && rates[code]) || 1;
-    populateCurrencySelectors();
-    refreshAllDisplays();
-  }
-
-  function populateCurrencySelectors() {
-    document.querySelectorAll('#currencySelect').forEach(sel => {
-      if (!sel.options.length) {
-        sel.innerHTML = Object.keys(SUPPORTED_CURRENCIES).map(code =>
-          '<option value="' + code + '">' + code + '</option>'
-        ).join('');
-      }
-      sel.value = currentCurrency;
-      if (!sel.dataset.cyWired) {
-        sel.addEventListener('change', function () { setCurrency(this.value); });
-        sel.dataset.cyWired = '1';
-      }
-    });
-  }
-
-  async function initCurrency() {
-    populateCurrencySelectors(); // show something immediately, defaulting to USD
-
-    const override = readJSON(CURRENCY_OVERRIDE_KEY, null);
-    if (override && SUPPORTED_CURRENCIES[override]) {
-      currentCurrency = override;
-    } else {
-      const geoCurrency = await fetchGeoCurrency();
-      currentCurrency = geoCurrency || detectCurrencyFromLocale();
-    }
-
-    const rates = await fetchRates();
-    currentRate = (rates && rates[currentCurrency]) || 1;
-
-    populateCurrencySelectors();
-    refreshAllDisplays();
-  }
-
-  function refreshAllDisplays() {
-    renderProductGrid();
-    refreshCartBadges();
-    renderCartPage();
-    renderCheckoutSummary();
-    renderAccountOverview();
-  }
-
   // ---------- formatting ----------
-  // moneyUSD: always shows the raw base-currency (USD) value — used in the
-  // Admin Panel where you enter and manage prices, independent of whichever
-  // currency a shopper currently has selected.
-  function moneyUSD(n) {
-    return '$' + (Math.round(n * 100) / 100).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-  }
-
-  // money: customer-facing price, converted + formatted in the shopper's
-  // detected or chosen currency. All internal math (cart totals, orders)
-  // stays in USD; this only affects what's displayed.
   function money(n) {
-    const converted = n * currentRate;
-    try {
-      return new Intl.NumberFormat(undefined, {
-        style: 'currency',
-        currency: currentCurrency,
-        maximumFractionDigits: currentCurrency === 'NGN' || currentCurrency === 'KES' ? 0 : 2
-      }).format(converted);
-    } catch (e) {
-      return moneyUSD(converted);
-    }
+    return '$' + (Math.round(n * 100) / 100).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
   }
 
   function escapeHtml(str) {
@@ -831,7 +684,6 @@
     refreshCartBadges();
     renderSearchSuggestions();
     wireSearchInput();
-    initCurrency();
   });
 
   // ---------- public API ----------
@@ -847,9 +699,7 @@
     // rendering
     renderProductGrid, renderCartDrawer, renderCartPage, renderCheckoutSummary, updateCheckoutTotals,
     renderAccountOverview, refreshCartBadges,
-    // currency
-    getCurrentCurrency, setCurrency, SUPPORTED_CURRENCIES,
     // utils
-    money, moneyUSD, escapeHtml
+    money, escapeHtml
   };
 })(window);

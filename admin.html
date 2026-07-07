@@ -96,7 +96,6 @@
         <a href="contact.html" class="nav-link">Contact</a>
       </nav>
       <div class="header-actions">
-        <select id="currencySelect" class="currency-select" aria-label="Currency"></select>
         <button class="icon-btn" aria-label="Search" id="searchBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
         <a href="account.html" class="icon-btn" aria-label="Account"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
         <button class="icon-btn cart-btn" aria-label="Cart" id="cartBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge" id="cartBadge">0</span></button>
@@ -137,49 +136,11 @@
 
   <section class="admin-page">
     <div class="container">
-
-      <!-- LOCK SCREEN — shown until the correct admin password is entered -->
-      <div id="adminLock" style="max-width:400px;margin:0 auto;">
-        <div class="admin-card" style="position:static;">
-          <div id="lockSetup">
-            <h3>Set Up Admin Access</h3>
-            <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:20px;">No admin password is set on this device yet. Create one now — only people who know it will be able to open this page on this browser.</p>
-            <div class="form-group">
-              <label for="setupPassword">New Password</label>
-              <input type="password" id="setupPassword" placeholder="At least 6 characters" autocomplete="new-password">
-            </div>
-            <div class="form-group">
-              <label for="setupPasswordConfirm">Confirm Password</label>
-              <input type="password" id="setupPasswordConfirm" placeholder="Re-enter password" autocomplete="new-password">
-            </div>
-            <p id="setupError" style="color:var(--color-sale);font-size:13px;display:none;margin-bottom:12px;"></p>
-            <button class="btn btn-primary btn-full" id="setupBtn">Create Password & Continue</button>
-          </div>
-
-          <div id="lockLogin" style="display:none;">
-            <h3>Admin Access</h3>
-            <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:20px;">Enter your admin password to manage products.</p>
-            <div class="form-group">
-              <label for="loginPassword">Password</label>
-              <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
-            </div>
-            <p id="loginError" style="color:var(--color-sale);font-size:13px;display:none;margin-bottom:12px;">Incorrect password.</p>
-            <button class="btn btn-primary btn-full" id="loginBtn">Unlock</button>
-            <p style="margin-top:16px;text-align:center;">
-              <a href="#" id="forgotPasswordLink" style="font-size:12px;color:var(--color-text-tertiary);text-decoration:underline;">Forgot password? Reset access on this device</a>
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- DASHBOARD — hidden until authenticated -->
-      <div id="adminDashboard" style="display:none;">
       <div class="admin-header">
         <div>
           <h1>Admin Panel</h1>
           <p>Add, edit, and remove the products you sell. Everything here is stored on this device and instantly reflected on your Home, Shop, and Collections pages.</p>
         </div>
-        <button class="btn btn-outline" id="logoutBtn">Log Out</button>
       </div>
 
       <div class="admin-layout">
@@ -196,9 +157,8 @@
 
             <div class="form-row">
               <div class="form-group">
-                <label for="productPrice">Price (USD) *</label>
+                <label for="productPrice">Price ($) *</label>
                 <input type="number" id="productPrice" min="0" step="0.01" placeholder="129.00" required>
-                <p style="font-size:12px;color:var(--color-text-tertiary);margin-top:6px;">Stored in USD. Shoppers automatically see it converted to their local currency.</p>
               </div>
               <div class="form-group">
                 <label for="productCompareAt">Compare-at Price ($)</label>
@@ -270,7 +230,6 @@
           </div>
         </div>
       </div>
-      </div>
     </div>
   </section>
 
@@ -297,110 +256,6 @@
 
   <script src="store.js"></script>
   <script src="main.js"></script>
-  <script>
-    // ---- Admin access gate ----
-    // This restricts the dashboard to whoever knows the password set on
-    // THIS device/browser. It's a front-door lock, not a server-side
-    // login system — anyone who opens this file's source in dev tools
-    // could bypass it, since there's no backend to enforce it remotely.
-    (function () {
-      const ADMIN_HASH_KEY = 'cyllux_admin_hash';
-      const SESSION_KEY = 'cyllux_admin_session';
-
-      const lockEl = document.getElementById('adminLock');
-      const dashboardEl = document.getElementById('adminDashboard');
-      const setupView = document.getElementById('lockSetup');
-      const loginView = document.getElementById('lockLogin');
-
-      async function sha256(text) {
-        const enc = new TextEncoder().encode(text);
-        const buf = await crypto.subtle.digest('SHA-256', enc);
-        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-      }
-
-      function unlock() {
-        sessionStorage.setItem(SESSION_KEY, '1');
-        lockEl.style.display = 'none';
-        dashboardEl.style.display = '';
-      }
-
-      function showSetup() {
-        setupView.style.display = '';
-        loginView.style.display = 'none';
-        lockEl.style.display = '';
-        dashboardEl.style.display = 'none';
-      }
-
-      function showLogin() {
-        setupView.style.display = 'none';
-        loginView.style.display = '';
-        lockEl.style.display = '';
-        dashboardEl.style.display = 'none';
-      }
-
-      if (sessionStorage.getItem(SESSION_KEY) === '1' && localStorage.getItem(ADMIN_HASH_KEY)) {
-        unlock();
-      } else if (localStorage.getItem(ADMIN_HASH_KEY)) {
-        showLogin();
-      } else {
-        showSetup();
-      }
-
-      document.getElementById('setupBtn').addEventListener('click', async function () {
-        const pass = document.getElementById('setupPassword').value;
-        const confirmPass = document.getElementById('setupPasswordConfirm').value;
-        const errorEl = document.getElementById('setupError');
-        errorEl.style.display = 'none';
-
-        if (pass.length < 6) {
-          errorEl.textContent = 'Password must be at least 6 characters.';
-          errorEl.style.display = '';
-          return;
-        }
-        if (pass !== confirmPass) {
-          errorEl.textContent = 'Passwords do not match.';
-          errorEl.style.display = '';
-          return;
-        }
-        const hash = await sha256(pass);
-        localStorage.setItem(ADMIN_HASH_KEY, hash);
-        unlock();
-      });
-
-      document.getElementById('loginBtn').addEventListener('click', async function () {
-        const pass = document.getElementById('loginPassword').value;
-        const errorEl = document.getElementById('loginError');
-        const hash = await sha256(pass);
-        if (hash === localStorage.getItem(ADMIN_HASH_KEY)) {
-          errorEl.style.display = 'none';
-          unlock();
-        } else {
-          errorEl.style.display = '';
-        }
-      });
-
-      document.getElementById('loginPassword').addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') document.getElementById('loginBtn').click();
-      });
-      document.getElementById('setupPasswordConfirm').addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') document.getElementById('setupBtn').click();
-      });
-
-      document.getElementById('forgotPasswordLink').addEventListener('click', function (e) {
-        e.preventDefault();
-        if (confirm('This will remove the saved admin password on this device and let you set a new one. Your products are not affected. Continue?')) {
-          localStorage.removeItem(ADMIN_HASH_KEY);
-          sessionStorage.removeItem(SESSION_KEY);
-          showSetup();
-        }
-      });
-
-      document.getElementById('logoutBtn').addEventListener('click', function () {
-        sessionStorage.removeItem(SESSION_KEY);
-        showLogin();
-      });
-    })();
-  </script>
   <script>
     (function () {
       const form = document.getElementById('productForm');
@@ -568,8 +423,8 @@
             ? '<img src="' + CylluxStore.escapeHtml(p.image) + '" alt="">'
             : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>';
           const priceHtml = (p.compareAtPrice && p.compareAtPrice > p.price)
-            ? CylluxStore.moneyUSD(p.price) + ' <span style="text-decoration:line-through;color:var(--color-text-tertiary);font-size:12px;">' + CylluxStore.moneyUSD(p.compareAtPrice) + '</span>'
-            : CylluxStore.moneyUSD(p.price);
+            ? CylluxStore.money(p.price) + ' <span style="text-decoration:line-through;color:var(--color-text-tertiary);font-size:12px;">' + CylluxStore.money(p.compareAtPrice) + '</span>'
+            : CylluxStore.money(p.price);
 
           return (
             '<tr>' +
